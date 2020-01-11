@@ -43,7 +43,7 @@ function openSheet() {
     var sh = ss.getSheetByName(sheetName);
 
     if (sh) {
-        if (sh.getRange("A1").getValue() == "Spotřeba") {
+        if (sh.getRange("A1").getValue() == sheetName) {
             return sh;
         }
     } else {
@@ -58,6 +58,6 @@ function openSheet() {
     ];
     sh.getRange("A1:D4").setValues(values);
 
-    sh.getRange("A1").setValue("Spotřeba");
+    sh.getRange("A1").setValue(sheetName);
     return sh;
 }
