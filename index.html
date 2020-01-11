@@ -1,0 +1,57 @@
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+
+<script>
+
+function submitData(hard = 0) {
+
+    // url of google web app
+    var google_url = "deployed webapp, change after deploying and deploy again ;) ";
+    var date  = document.getElementById('date').value;
+    var km  = document.getElementById('km').value;
+    var l = document.getElementById('l').value;
+    var warningText = "";
+
+    if(km.length == 0) warningText += "\nNejsou vyplněné kilometry";
+    if(l.length == 0) warningText += "\nLitry nejsou vyplněny";
+    if(warningText.length != 0 && !hard) {alert(warningText); return; }
+
+    fetch(google_url+"?submit=true"+"&km="+km+"&l="+l+"&date="+date);
+
+    document.getElementById('km').value = "";
+    document.getElementById('l').value = "";
+
+}
+
+</script>
+
+<body>
+
+<div style="width: 330px; margin: auto;"><form>
+
+    <div class="input-group">
+        <div class="input-group-prepend"><span class="input-group-text" style="width: 80px">Kilometry</span></div>
+        <input type="text" class="form-control" id="km" style="max-width: 250px">
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend"><span class="input-group-text" style="width: 80px">Litry</span></div>
+        <input type="text" class="form-control" id="l" style="max-width: 250px">
+    </div>
+
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text" style="width: 80px">Datum</span>
+        </div>
+        <input type="date" class="form-control" id="date" style="max-width: 250px; text-align: center;"
+        value='<?= Utilities.formatDate(new Date(), "GMT+1", "YYYY-MM-dd") ?>'>
+    </div>
+
+    <div class="btn-group" role="group" style="width: 330px">
+        <button type="button" class="btn btn-primary" onclick='submitData()' >Uložit</button>
+    </div>
+
+</form></div>
+
+</body>
