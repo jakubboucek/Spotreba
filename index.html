@@ -18,17 +18,17 @@ function submitData(hard = 0) {
     if(l.length == 0) warningText += "\nLitry nejsou vyplněny";
     if(warningText.length != 0 && !hard) {alert(warningText); return; }
 
-    document.getElementById("statusbar").innerHTML="Odesílám"
+    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
     document.getElementById("statusbar").className = "alert alert-warning";
 
     fetch(google_url+"?submit=true"+"&km="+km+"&l="+l+"&date="+date+"&control="+control)
         .then(function(response) {
             return response.text().then(function(google_response) {
                 if (google_response == control) {
-                    document.getElementById("statusbar").innerHTML="Odesláno."
+                    document.getElementById("statusbar").innerHTML="Úspěšně odesláno"
                     document.getElementById("statusbar").className = "alert alert-success";
                 } else {
-                    document.getElementById("statusbar").innerHTML="Chyba!"
+                    document.getElementById("statusbar").innerHTML="Chyba! Obnov stránku"
                     document.getElementById("statusbar").className = "alert alert-danger";
                 }
             });
@@ -43,31 +43,32 @@ function submitData(hard = 0) {
 
 <body>
 
-<div style="width: 330px; margin: auto;"><form>
+<div style="width: 350px; margin: auto;">
     <div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš<form>
 
-    <div class="input-group">
-        <div class="input-group-prepend"><span class="input-group-text" style="width: 80px">Kilometry</span></div>
-        <input type="text" class="form-control" id="km" style="max-width: 250px">
-    </div>
-
-    <div class="input-group">
-        <div class="input-group-prepend"><span class="input-group-text" style="width: 80px">Litry</span></div>
-        <input type="text" class="form-control" id="l" style="max-width: 250px">
-    </div>
-
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text" style="width: 80px">Datum</span>
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
+            <input type="text" class="form-control" id="km" style="max-width: 250px">
         </div>
-        <input type="date" class="form-control" id="date" style="max-width: 250px; text-align: center;"
-        value='<?= Utilities.formatDate(new Date(), "GMT+1", "YYYY-MM-dd") ?>'>
-    </div>
 
-    <div class="btn-group" role="group" style="width: 330px">
-        <button type="button" class="btn btn-primary" onclick='submitData()' >Uložit</button>
-    </div>
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Litry</span></div>
+            <input type="text" class="form-control" id="l" style="max-width: 250px">
+        </div>
 
-</form></div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text" style="width: 100px">Datum</span>
+            </div>
+            <input type="date" class="form-control" id="date" style="max-width: 250px; text-align: center;"
+            value='<?= Utilities.formatDate(new Date(), "GMT+1", "YYYY-MM-dd") ?>'>
+        </div>
+
+        <div class="btn-group" role="group" style="width: 100%">
+            <button type="button" class="btn btn-primary" onclick='submitData()' >Uložit</button>
+        </div>
+
+    </form></div>
+</div>
 
 </body>
