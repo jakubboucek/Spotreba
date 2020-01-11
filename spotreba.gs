@@ -45,19 +45,12 @@ function openSheet() {
 
     sh = ss.insertSheet(sheetName);
 
-    sh.getRange("A1").setValue("Spotřeba");
-    sh.getRange("B1").setValue("Celkem km");
-    sh.getRange("C1").setValue("Celkem litrů");
-    sh.getRange("D1").setValue("Spotřeba");
-
-    sh.getRange("B2").setValue("=SUM(B3:B)");
-    sh.getRange("C2").setValue("=SUM(C3:C)");
-    sh.getRange("D2").setValue('=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")');
-
-    sh.getRange("A3").setValue("Datum");
-    sh.getRange("B3").setValue("Kilometry");
-    sh.getRange("C3").setValue("Litry");
-    sh.getRange("D3").setValue("l/100");
+    var values = [
+        ['Spotřeba'      , 'Celkem km' , 'Celkem litrů', 'Spotřeba', ],
+        ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")', ],
+        ['Datum'         , 'Kilometry' , 'Litry'       , 'l/100', ],
+    ];
+    sh.getRange("A1:D3").setValues(values);
 
     return sh;
 }
