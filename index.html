@@ -8,6 +8,16 @@ window.onload = function() {
     document.getElementById('date').value = new Date().toJSON().slice(0,10);
 }
 
+function onSuccess() {
+    document.getElementById("statusbar").innerHTML="Úspěšně odesláno";
+    document.getElementById("statusbar").className = "alert alert-success";
+}
+
+function onFailure() {
+    document.getElementById("statusbar").innerHTML="Chyba! Obnov stránku";
+    document.getElementById("statusbar").className = "alert alert-danger";
+}
+
 function submitData(hard = 0) {
 
     var date  = document.getElementById('date').value;
@@ -22,22 +32,10 @@ function submitData(hard = 0) {
     document.getElementById("statusbar").innerHTML="Odesílám, čekej"
     document.getElementById("statusbar").className = "alert alert-warning";
 
-    var vars = "Nový záznam: " + date + ", " + km + " km, " + l + " l";
-    //fetch('telegram_url'+vars);
-
-    fetch(webappURL+"?submit=true"+"&km="+km+"&l="+l+"&date="+date)
-        .then(function(response) {
-            return response.text().then(function(google_response) {
-                if (google_response == "done") {
-                    document.getElementById("statusbar").innerHTML="Úspěšně odesláno";
-                    document.getElementById("statusbar").className = "alert alert-success";
-                } else {
-                    document.getElementById("statusbar").innerHTML="Chyba! Obnov stránku";
-                    document.getElementById("statusbar").className = "alert alert-danger";
-                }
-            });
-        });
-
+    google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .fillIn(date, km, l);
 }
 
 </script>
