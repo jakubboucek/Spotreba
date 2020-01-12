@@ -20,6 +20,7 @@ function onFailure() {
 
 function submitData(hard = 0) {
 
+    var isfirst = document.getElementById('isfirst').checked;
     var cartype = document.getElementById('cartype').value;
     var isfull = document.getElementById('full').checked;
     var date  = document.getElementById('date').value;
@@ -28,7 +29,7 @@ function submitData(hard = 0) {
     var warningText = "";
 
     if(km.length == 0) warningText += "\nNejsou vyplněné kilometry";
-    if(l.length == 0) warningText += "\nLitry nejsou vyplněny";
+    if(l.length == 0 && !isfirst) warningText += "\nLitry nejsou vyplněny";
     if(warningText.length != 0 && !hard) {alert(warningText); return; }
 
     document.getElementById("statusbar").innerHTML="Odesílám, čekej"
@@ -37,7 +38,7 @@ function submitData(hard = 0) {
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .fillIn(cartype, date, km, l, isfull);
+        .fillIn(cartype, date, km, l, isfull, isfirst);
 }
 
 </script>
@@ -60,6 +61,11 @@ function submitData(hard = 0) {
         <div class="custom-control custom-switch" style="text-align: right;">
             <input type="checkbox" class="custom-control-input" id="full" checked>
             <label class="custom-control-label" for="full">Natankována plná nádrž</label>
+        </div>
+
+        <div class="custom-control custom-switch" style="text-align: right;">
+            <input type="checkbox" class="custom-control-input" id="isfirst">
+            <label class="custom-control-label" for="isfirst">První tankování s autem!</label>
         </div>
 
         <div class="input-group">

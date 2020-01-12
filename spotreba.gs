@@ -12,12 +12,18 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(data);
 }
 
-function fillIn(carType, datum, km, litry, isfull) {
+function fillIn(carType, datum, km, litry, isfull, isfirst) {
 
     km=Number(km); litry=Number(litry);
 
     var sh = openSheet(carType);
 
+    if (isfirst) {
+        sh.insertRowBefore(newLine);
+        var values = [[datum, km, ]];
+        sh.getRange("A"+newLine+":B"+newLine).setValues(values);
+        return true;
+    }
     if (km < sh.getRange("B5").getValue()) return false;
 
     var ujeto = "=(B5-B6)";
