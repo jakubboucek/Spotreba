@@ -23,7 +23,7 @@ function fillIn(carType, datum, km, litry) {
 
     sh.insertRowBefore(newLine);
     sh.getRange("A"+newLine+":D"+newLine).setValues(values);
-    sendNotification(_msg);
+    // sendNotification(_msg);
 }
 
 function sendNotification(_msg) {
