@@ -18,7 +18,7 @@ function fillIn(carType, datum, km, litry, isfull) {
 
     var sh = openSheet(carType);
     var spotreba = Number(((litry/km)*100).toFixed(2));
-    var values = [[datum, km, litry, "=(C5/(B5-B6))*100", isfull]];
+    var values = [[datum, km, litry, spotreba, isfull]];
     var _msg = "Natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
 
     sh.insertRowBefore(newLine);
