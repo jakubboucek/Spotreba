@@ -1,7 +1,7 @@
 
 var newLine = 5;
 var sheetName = "Spotřeba";
-var sheetID = "sheet ID here :) ";
+var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
 
 function doGet(e) {
 
