@@ -6,7 +6,6 @@
 
 function submitData(hard = 0) {
 
-    // url of google web app
     var google_url = "deployed webapp, change after deploying and deploy again ;) ";
     var date  = document.getElementById('date').value;
     var km  = document.getElementById('km').value;
@@ -21,6 +20,9 @@ function submitData(hard = 0) {
     document.getElementById("statusbar").innerHTML="Odesílám, čekej"
     document.getElementById("statusbar").className = "alert alert-warning";
 
+    var vars = "Nový záznam: " + date + ", " + km + " km, " + l + " l";
+    //fetch('telegram_url'+vars);
+
     fetch(google_url+"?submit=true"+"&km="+km+"&l="+l+"&date="+date+"&control="+control)
         .then(function(response) {
             return response.text().then(function(google_response) {
@@ -33,9 +35,6 @@ function submitData(hard = 0) {
                 }
             });
         });
-
-    document.getElementById('km').value = "";
-    document.getElementById('l').value = "";
 
 }
 
