@@ -5,17 +5,6 @@ var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
 
 function doGet(e) {
 
-    if(e.parameters.submit) {
-
-        var km = e.parameters.km;
-        var l = e.parameters.l;
-        var date = e.parameters.date;
-
-        fillIn(date, km, l);
-
-        return ContentService.createTextOutput("done");
-    }
-
     var webappURL = ScriptApp.getService().getUrl();
     var variable = '<script> var webappURL = "' + webappURL + '"; </script>';
     var data = variable + HtmlService.createHtmlOutputFromFile('index').getContent();
@@ -27,15 +16,11 @@ function fillIn(_date, _km, _l) {
 
     var sh = openSheet();
 
-    _km = Number(_km);
-    _l = Number(_l);
-
     sh.insertRowBefore(newLine);
 
-    sh.getRange('A'+newLine).setValue(_date);
-    sh.getRange('B'+newLine).setValue(_km);
-    sh.getRange('C'+newLine).setValue(_l);
-    sh.getRange('D'+newLine).setValue('=(C'+newLine+'/B'+newLine+')*100');
+    var values = [[_date, _km, _l, '=(C'+newLine+'/B'+newLine+')*100']];
+    sh.getRange("A"+newLine+":D"+newLine).setValues(values);
+
 }
 
 function openSheet() {
