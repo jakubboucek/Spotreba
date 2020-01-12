@@ -12,14 +12,14 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(data);
 }
 
-function fillIn(datum, km, litry) {
+function fillIn(carType, datum, km, litry) {
 
     km=Number(km); litry=Number(litry);
 
-    var sh = openSheet(sheetName);
+    var sh = openSheet(carType);
     var spotreba = Number(((litry/km)*100).toFixed(2));
     var values = [[datum, km, litry, spotreba]];
-    var _msg = "Bylo natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
+    var _msg = "Natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
 
     sh.insertRowBefore(newLine);
     sh.getRange("A"+newLine+":D"+newLine).setValues(values);
@@ -40,15 +40,26 @@ function sendNotification(_msg) {
 
 function openSheet(_name) {
 
+    if (!_name) var name = "test";
+
     var ss = SpreadsheetApp.openById(sheetID);
     var sh = ss.getSheetByName(_name);
 
-    if (sh) {return sh; }
-    else {sh = ss.insertSheet(_name); }
+    if (sh) {return sh; } // sheet již existuje
+
+    else if (_name == "Settings") { // pro nastavení
+        sh = ss.insertSheet(_name); // podle šablony níže
+    }
+
+    else { // nový sheet s názvem auta
+        sh = ss.getSheetByName("Template");
+        if (!sh) {sh = ss.insertSheet(_name); } // Template neexistuje, udělat podle šablony níže
+        else {sh = sh.copyTo(ss).setName(_name); return sh; } // vrátit kopii Templaty s názvem auta
+    }
 
     switch(_name) {
 
-        case sheetName:
+        default:
             var values = [
                 [_name, 'Celkem km' , 'Celkem litrů', 'Spotřeba', ],
                 ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")', ],

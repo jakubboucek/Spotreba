@@ -20,6 +20,7 @@ function onFailure() {
 
 function submitData(hard = 0) {
 
+    var cartype = document.getElementById('cartype').value;
     var date  = document.getElementById('date').value;
     var km  = document.getElementById('km').value;
     var l = document.getElementById('l').value;
@@ -35,7 +36,7 @@ function submitData(hard = 0) {
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .fillIn(date, km, l);
+        .fillIn(cartype, date, km, l);
 }
 
 </script>
@@ -53,6 +54,11 @@ function submitData(hard = 0) {
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Litry</span></div>
             <input type="number" class="form-control" id="l" style="max-width: 250px">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Auto</span></div>
+            <input type="text" class="form-control" id="cartype" style="max-width: 250px">
         </div>
 
         <div class="input-group">
