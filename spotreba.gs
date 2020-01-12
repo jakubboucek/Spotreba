@@ -16,9 +16,11 @@ function doGet(e) {
         return ContentService.createTextOutput("done");
     }
 
-    return HtmlService
-        .createTemplateFromFile('index')
-        .evaluate();
+    var webappURL = ScriptApp.getService().getUrl();
+    var variable = '<script> var webappURL = "' + webappURL + '"; </script>';
+    var data = variable + HtmlService.createHtmlOutputFromFile('index').getContent();
+
+    return HtmlService.createHtmlOutput(data);
 }
 
 function fillIn(_date, _km, _l) {
