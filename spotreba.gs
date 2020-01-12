@@ -10,11 +10,10 @@ function doGet(e) {
         var km = e.parameters.km;
         var l = e.parameters.l;
         var date = e.parameters.date;
-        var control = e.parameters.control;
 
         fillIn(date, km, l);
 
-        return ContentService.createTextOutput(control);
+        return ContentService.createTextOutput("done");
     }
 
     return HtmlService

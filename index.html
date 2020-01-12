@@ -11,7 +11,6 @@ function submitData(hard = 0) {
     var km  = document.getElementById('km').value;
     var l = document.getElementById('l').value;
     var warningText = "";
-    var control = Math.floor(Math.random() * 99999999);
 
     if(km.length == 0) warningText += "\nNejsou vyplněné kilometry";
     if(l.length == 0) warningText += "\nLitry nejsou vyplněny";
@@ -23,10 +22,10 @@ function submitData(hard = 0) {
     var vars = "Nový záznam: " + date + ", " + km + " km, " + l + " l";
     //fetch('telegram_url'+vars);
 
-    fetch(google_url+"?submit=true"+"&km="+km+"&l="+l+"&date="+date+"&control="+control)
+    fetch(google_url+"?submit=true"+"&km="+km+"&l="+l+"&date="+date)
         .then(function(response) {
             return response.text().then(function(google_response) {
-                if (google_response == control) {
+                if (google_response == "done") {
                     document.getElementById("statusbar").innerHTML="Úspěšně odesláno";
                     document.getElementById("statusbar").className = "alert alert-success";
                 } else {
