@@ -4,6 +4,10 @@
 
 <script>
 
+window.onload = function() {
+    document.getElementById('date').value = new Date().toJSON().slice(0,10);
+}
+
 function submitData(hard = 0) {
 
     var google_url = "deployed webapp, change after deploying and deploy again ;) ";
@@ -59,8 +63,7 @@ function submitData(hard = 0) {
             <div class="input-group-prepend">
                 <span class="input-group-text" style="width: 100px">Datum</span>
             </div>
-            <input type="date" class="form-control" id="date" style="max-width: 250px; text-align: center;"
-            value='<?= Utilities.formatDate(new Date(), "GMT+1", "YYYY-MM-dd") ?>'>
+            <input type="date" class="form-control" id="date" style="max-width: 250px; text-align: center;">
         </div>
 
         <div class="btn-group" role="group" style="width: 100%">
