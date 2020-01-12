@@ -43,13 +43,8 @@ function openSheet(_name) {
     var ss = SpreadsheetApp.openById(sheetID);
     var sh = ss.getSheetByName(_name);
 
-    if (sh) {
-        if (sh.getRange("A1").getValue() == _name) {
-            return sh;
-        }
-    } else {
-        sh = ss.insertSheet(_name);
-    }
+    if (sh) {return sh; }
+    else {sh = ss.insertSheet(_name); }
 
     switch(_name) {
 
