@@ -12,17 +12,30 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(data);
 }
 
-function fillIn(_date, _km, _l) {
+function fillIn(datum, km, litry) {
+
+    km=Number(km); litry=Number(litry);
 
     var sh = openSheet(sheetName);
+    var spotreba = ((litry/km)*100).toFixed(2);
+    var values = [[datum, km, litry, spotreba]];
+    var _msg = "Bylo natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
 
     sh.insertRowBefore(newLine);
-
-    var values = [[_date, _km, _l, '=(C'+newLine+'/B'+newLine+')*100']];
     sh.getRange("A"+newLine+":D"+newLine).setValues(values);
+    sendNotification(_msg);
+}
 
-    sh = openSheet("Settings");
+function sendNotification(_msg) {
 
+    var sh = openSheet("Settings");
+    var userID = sh.getRange("C3").getValue();
+    var token  = sh.getRange("C4").getValue();
+
+    var url = "https://api.telegram.org/bot" + token;
+    url += "/sendMessage?chat_id=" +userID +"&text=" +encodeURI(_msg);
+
+    var response = UrlFetchApp.fetch(url);
 }
 
 function openSheet(_name) {
