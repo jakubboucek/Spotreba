@@ -12,18 +12,18 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(data);
 }
 
-function fillIn(carType, datum, km, litry) {
+function fillIn(carType, datum, km, litry, isfull) {
 
     km=Number(km); litry=Number(litry);
 
     var sh = openSheet(carType);
     var spotreba = Number(((litry/km)*100).toFixed(2));
-    var values = [[datum, km, litry, spotreba]];
+    var values = [[datum, km, litry, "=(C5/(B5-B6))*100", isfull]];
     var _msg = "Natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
 
     sh.insertRowBefore(newLine);
-    sh.getRange("A"+newLine+":D"+newLine).setValues(values);
-    // sendNotification(_msg);
+    sh.getRange("A"+newLine+":E"+newLine).setValues(values);
+    sendNotification(_msg);
 }
 
 function sendNotification(_msg) {
