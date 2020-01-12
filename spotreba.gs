@@ -18,11 +18,12 @@ function fillIn(carType, datum, km, litry, isfull) {
 
     var sh = openSheet(carType);
     var spotreba = Number(((litry/km)*100).toFixed(2));
-    var values = [[datum, km, litry, spotreba, isfull]];
+    var ujeto = km-sh.getRange("B5").getValue();
+    var values = [[datum, km, litry, spotreba, ujeto, isfull, ]];
     var _msg = "Natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
 
     sh.insertRowBefore(newLine);
-    sh.getRange("A"+newLine+":E"+newLine).setValues(values);
+    sh.getRange("A"+newLine+":F"+newLine).setValues(values);
     sendNotification(_msg);
 }
 
@@ -61,12 +62,12 @@ function openSheet(_name) {
 
         default:
             var values = [
-                [_name, 'Celkem km' , 'Celkem litrů', 'Spotřeba', ],
-                ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")', ],
-                ['', '', '', '', ],
-                ['Datum'         , 'Kilometry' , 'Litry'       , 'l/100', ],
+                [_name, 'Celkem km' , 'Celkem litrů', 'Spotřeba',  '', '', ],
+                ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")',  '', '', ],
+                ['', '', '', '',  '', '', ],
+                ['Datum'         , 'Kilometry' , 'Litry'       , 'l/100', 'Ujeto', 'Celá?', ],
             ];
-            sh.getRange("A1:D4").setValues(values);
+            sh.getRange("A1:F4").setValues(values);
         break;
 
         case "Settings":
