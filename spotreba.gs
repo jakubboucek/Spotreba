@@ -17,14 +17,17 @@ function fillIn(carType, datum, km, litry, isfull) {
     km=Number(km); litry=Number(litry);
 
     var sh = openSheet(carType);
-    var spotreba = Number(((litry/km)*100).toFixed(2));
-    var ujeto = km-sh.getRange("B5").getValue();
+
+    if (km < sh.getRange("B5").getValue()) return false;
+
+    var ujeto = "=(B5-B6)";
+    var spotreba = "=(C5/E5)*100";
     var values = [[datum, km, litry, spotreba, ujeto, isfull, ]];
     var _msg = "Natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
 
     sh.insertRowBefore(newLine);
     sh.getRange("A"+newLine+":F"+newLine).setValues(values);
-    sendNotification(_msg);
+    // sendNotification(_msg);
 }
 
 function sendNotification(_msg) {
