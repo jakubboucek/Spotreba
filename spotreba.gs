@@ -1,7 +1,7 @@
 
 var newLine = 5;
 var sheetName = "Spotřeba";
-var sheetID = "sheet ID here :) ";
+var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
 
 function doGet(e) {
 
@@ -10,16 +10,17 @@ function doGet(e) {
         var km = e.parameters.km;
         var l = e.parameters.l;
         var date = e.parameters.date;
-        var control = e.parameters.control;
 
         fillIn(date, km, l);
 
-        return ContentService.createTextOutput(control);
+        return ContentService.createTextOutput("done");
     }
 
-    return HtmlService
-        .createTemplateFromFile('index')
-        .evaluate();
+    var webappURL = ScriptApp.getService().getUrl();
+    var variable = '<script> var webappURL = "' + webappURL + '"; </script>';
+    var data = variable + HtmlService.createHtmlOutputFromFile('index').getContent();
+
+    return HtmlService.createHtmlOutput(data);
 }
 
 function fillIn(_date, _km, _l) {
