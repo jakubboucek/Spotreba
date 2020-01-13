@@ -1,6 +1,8 @@
 
 var newLine = 5;
 var sheetName = "Spotřeba";
+var settingsName = "Settings";
+var templateName = "Template";
 var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
 
 function doGet(e) {
@@ -36,12 +38,13 @@ function fillIn(carType, datum, km, litry, isfull, isfirst) {
 
     sh.insertRowBefore(newLine);
     sh.getRange("A"+newLine+":F"+newLine).setValues(values);
-    // sendNotification(_msg);
+    sendNotification(_msg);
 }
 
 function sendNotification(_msg) {
 
-    var sh = openSheet("Settings");
+    var sh = openSheet(settingsName);
+    if (!sh.getRange("C6").getValue) {return; }
     var userID = sh.getRange("C3").getValue();
     var token  = sh.getRange("C4").getValue();
 
@@ -49,6 +52,38 @@ function sendNotification(_msg) {
     url += "/sendMessage?chat_id=" +userID +"&text=" +encodeURI(_msg);
 
     var response = UrlFetchApp.fetch(url);
+}
+
+function reloadSettings(sh) {
+
+    if (!sh) {
+        var ss = SpreadsheetApp.openById(sheetID);
+        var sh = ss.getSheetByName(settingsName);
+        if (!sh) {sh = ss.insertSheet(settingsName); }
+    }
+
+    var values = [
+        [settingsName, ""],
+        ["Telegram", ""],
+        ["", 'User_ID'],
+        ["", 'Telegram_token'],
+        ["Notifications", ''],
+        ["", 'Telegram'],
+    ];
+
+    sh.getRange("A1:B6").setValues(values);
+}
+
+function loadFromDefault(sh) {
+
+    var values = [
+        [templateName, 'Celkem km' , 'Celkem litrů', 'Spotřeba', '', '', ],
+        ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")', '', '', ],
+        ['', '', '', '', '', '', ],
+        ['Datum', 'Kilometry', 'Litry', 'l/100', 'Ujeto', 'Celá?', ],
+    ];
+
+    sh.getRange("A1:F4").setValues(values);
 }
 
 function openSheet(_name) {
@@ -60,38 +95,22 @@ function openSheet(_name) {
 
     if (sh) {return sh; } // sheet již existuje
 
-    else if (_name == "Settings") { // pro nastavení
+    else if (_name == settingsName) { // pro nastavení
         sh = ss.insertSheet(_name); // podle šablony níže
+        reloadSettings();
+        return sh;
     }
 
     else { // nový sheet s názvem auta
-        sh = ss.getSheetByName("Template");
-        if (!sh) {sh = ss.insertSheet(_name); } // Template neexistuje, udělat podle šablony níže
-        else {sh = sh.copyTo(ss).setName(_name); return sh; } // vrátit kopii Templaty s názvem auta
-    }
 
-    switch(_name) {
+        sh = ss.getSheetByName(templateName);
 
-        default:
-            var values = [
-                [_name, 'Celkem km' , 'Celkem litrů', 'Spotřeba',  '', '', ],
-                ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")',  '', '', ],
-                ['', '', '', '',  '', '', ],
-                ['Datum'         , 'Kilometry' , 'Litry'       , 'l/100', 'Ujeto', 'Celá?', ],
-            ];
-            sh.getRange("A1:F4").setValues(values);
-        break;
+        if (!sh) {
+            sh = ss.insertSheet(templateName);
+            loadFromDefault(sh);
+        }
 
-        case "Settings":
-            var values = [
-                [_name, ""],
-                ["Telegram", ""],
-                ["", 'User_ID'],
-                ["", 'Telegram_token'],
-            ];
-            sh.getRange("A1:B4").setValues(values);
-        break;
-
+        sh = sh.copyTo(ss).setName(_name); return sh;
     }
 
     return sh;
