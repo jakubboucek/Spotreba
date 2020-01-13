@@ -52,7 +52,8 @@ function newCar(hard = 0) {
     var date = new Date().toJSON().slice(0,10);
     var warningText = "";
 
-    if (carname == "Vyber uživatele") warningText += "\nNení vybrán uživatel";
+    carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
+
     if (start_km.length == 0) warningText += "\nNejsou vyplněné kilometry";
     if (start_km > 1000000)   warningText += "\nKilometry jsou vyšší než milion";
     //if (start_km < google_lastKm) warningText += "\nKilometry jsou nižší než posledně";
@@ -122,13 +123,11 @@ function switchForms(form = "zaznam") {
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
             <select class="custom-select" id="cartype" style="width: 100%; text-align: center;">
                 <option selected>Vyber uživatele</option>
-                <option value="Karel-Stříbrňák">Karel-Stříbrňák</option>
-                <option value="Karel-Mentolka">Karel-Mentolka</option>
-                <option value="Karel-Nisan">Karel-Nisan</option>
-                <option value="Jakub-Volvo">Jakub-Volvo</option>
-                <option value="Jakub-Mercedes">Jakub-Mercedes</option>
-                <option value="Katka-Saxo">Katka-Saxo</option>
-                <option value="Jitka-Rapid">Jitka-Rapid</option>
+                <script>
+                    sheetsNames.forEach(element => document.write(
+                        '<option value='+window.atob(element)+'>'+window.atob(element)+'</option>')
+                    );
+                </script>
             </select>
         </div>
 
