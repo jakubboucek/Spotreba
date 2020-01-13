@@ -29,7 +29,10 @@ function fillIn(carType, datum, km, litry, isfull, isfirst) {
     var ujeto = "=(B5-B6)";
     var spotreba = "=(C5/E5)*100";
     var values = [[datum, km, litry, spotreba, ujeto, isfull, ]];
-    var _msg = "Natankováno dne: " +datum +"\nKilometry: " +km +" | Litry: " +litry +"\nSpotřeba: " +spotreba +" litrů/100km";
+    var _msg = "Auto: " +carType
+        +"\nNatankováno dne: " +datum
+        +"\nKilometry: " +(km-sh.getRange("B5").getValue()) +" | Litry: " +litry
+        +"\nSpotřeba: " +((litry/(km-sh.getRange("B5").getValue()))*100).toFixed(2) +" litrů/100km";
 
     sh.insertRowBefore(newLine);
     sh.getRange("A"+newLine+":F"+newLine).setValues(values);
