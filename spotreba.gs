@@ -20,7 +20,11 @@ function fillIn(carType, date, km, litry) {
 
     var sh = openSheet(carType, false);
 
-    if (km < sh.getRange("B5").getValue()) return false;
+    if (km < sh.getRange("B5").getValue()) {
+        notifyUser("Zadané km jsou menší než předchozí.", "Error")
+        var asdf = crashAppQWERTZUIOP; // crash app
+        return false;
+    }
 
     var ujeto = "=(B5-B6)";
     var spotreba = "=(C5/E5)*100";
@@ -32,7 +36,9 @@ function fillIn(carType, date, km, litry) {
 
     sh.insertRowBefore(newLine);
     sh.getRange("A"+newLine+":E"+newLine).setValues(values);
-    notifiUser(_msg);
+    notifyUser(_msg);
+
+    return true;
 }
 
 function registerCar(date, km, carType) {
@@ -43,13 +49,13 @@ function registerCar(date, km, carType) {
     var values = [[date, km, ]];
     sh.getRange("A"+newLine+":B"+newLine).setValues(values);
 
-    var _msg = "Vytvořeno auto: " + carType + "\nS počátečním stavem: " + km;
-    notifiUser(_msg);
+    var _msg = "Vytvořeno auto: " + carType + "\nS počátečním stavem: "+km+" km";
+    notifyUser(_msg);
 
     return true;
 }
 
-function notifiUser(_msg, _type) {
+function notifyUser(_msg, _type) {
 
     if (_type===undefined) var _type = "Ostatní";
     if (_msg ===undefined) var _msg = "Žádná zpráva";
@@ -71,7 +77,7 @@ function reloadSettings() {
 
     var sh = openSheet("Settings", true);
     if (!sh) {
-        notifiUser("Nepovedlo se vytvořit sheet s Nastavením", "Error");
+        notifyUser("Nepovedlo se vytvořit sheet s Nastavením.", "Error");
         return false;
     }
 
@@ -80,13 +86,13 @@ function reloadSettings() {
         ["Telegram", ""],
         ["", 'User_ID'],
         ["", 'Telegram_token'],
-        ["Notifications", ''],
+        ["Notifycations", ''],
         ["", 'Telegram'],
     ];
 
     sh.getRange("A1:B6").setValues(values);
 
-    notifiUser("Sheet s Nastavením byl vytvořen", "Info");
+    notifyUser("Sheet s Nastavením byl vytvořen", "Info");
 }
 
 function loadFromDefault(sh) {
@@ -111,20 +117,21 @@ function openSheet(_name, _create) {
     var sh = ss.getSheetByName(_name);
 
     if (sh) {
-        if (_create) {notifiUser("Sheet již existuje.", "Error"); return false; }
+        if (_create) {notifyUser("Sheet "+_name+" již existuje.", "Error"); return false; }
         else {return sh; }
     }
 
     else if (_name == settingsName) { // pro nastavení
         sh = ss.insertSheet(_name); // podle šablony níže
         reloadSettings();
+        notifyUser("Sheet "+sheetName+" byl vytvořen podle šablony.");
         return sh;
     }
 
     else { // nový sheet s názvem auta
 
         if (!_create) {
-            notifiUser("Nemám pravomoci vytvořit sheet: " + _name + ".", "Error");
+            notifyUser("Nemám pravomoci vytvořit sheet: " + _name + ".", "Error");
             return false; // není pravomoce vytvářet
         }
 
