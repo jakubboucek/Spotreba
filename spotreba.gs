@@ -7,9 +7,24 @@ var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
 
 function doGet(e) {
 
+    var sheetsNames = "";
+    var sheets = SpreadsheetApp.openById(sheetID).getSheets();
+    for (var i=0 ; i<sheets.length ; i++) {
+        _name = sheets[i].getName();
+        if (_name != settingsName && _name != templateName) {
+            _name = Utilities.base64Encode(_name);
+            sheetsNames+='\''+_name+'\',';
+        }
+    }
+
     var webappURL = ScriptApp.getService().getUrl();
-    var variable = '<script> var webappURL = "' + webappURL + '"; </script>';
+    var variable = ''
+        +'<script>'
+            +'var webappURL = "' + webappURL + '";'
+            +'var sheetsNames = [' + sheetsNames + '];'
+        +'</script>';
     var data = variable + HtmlService.createHtmlOutputFromFile('index').getContent();
+Logger.log(data);
 
     return HtmlService.createHtmlOutput(data);
 }
@@ -20,8 +35,8 @@ function fillIn(carType, date, km, litry) {
 
     var sh = openSheet(carType, false);
 
-    if (km < sh.getRange("B5").getValue()) {
-        notifyUser("Zadané km jsou menší než předchozí.", "Error")
+    if (km <= sh.getRange("B5").getValue()) {
+        notifyUser("Zadané km jsou menší nebo stejné než předchozí.", "Error")
         var asdf = crashAppQWERTZUIOP; // crash app
         return false;
     }
