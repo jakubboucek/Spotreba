@@ -12,8 +12,22 @@ window.onload = function() {
 }
 
 function onSuccess() {
-    document.getElementById("statusbar").innerHTML="Úspěšně odesláno";
+    document.getElementById("statusbar").innerHTML= ""
+        +'<label>Úspěšně odesláno. :)</label>'
     document.getElementById("statusbar").className = "alert alert-success";
+
+    var start_km = document.getElementById('start_km').value = "";
+    var cartype = document.getElementById('cartype').value = "";
+    var km  = document.getElementById('km').value = "";
+    var l = document.getElementById('l').value = "";
+
+    var carname = document.getElementById('carname').value;
+    carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
+    var x = document.getElementById("cartype");
+    var option = document.createElement("option");
+    option.text = carname; option.value = carname;
+    x.add(option);
+    document.getElementById('carname').value = "";
 }
 
 function onFailure() {
