@@ -4,8 +4,11 @@
 
 <script>
 
+var active_form = "zaznam";
+
 window.onload = function() {
-    document.getElementById('date').value = new Date().toJSON().slice(0,10);
+    document.getElementById('Date').value = new Date().toJSON().slice(0,10);
+    switchForms();
 }
 
 function onSuccess() {
@@ -18,19 +21,21 @@ function onFailure() {
     document.getElementById("statusbar").className = "alert alert-danger";
 }
 
-function submitData(hard = 0) {
+function newZaznam(hard = 0) {
 
-    var isfirst = document.getElementById('isfirst').checked;
     var cartype = document.getElementById('cartype').value;
-    var isfull = document.getElementById('full').checked;
-    var date  = document.getElementById('date').value;
+    var Date  = document.getElementById('Date').value;
     var km  = document.getElementById('km').value;
     var l = document.getElementById('l').value;
     var warningText = "";
 
-    if(km.length == 0) warningText += "\nNejsou vyplněné kilometry";
-    if(l.length == 0 && !isfirst) warningText += "\nLitry nejsou vyplněny";
-    if(warningText.length != 0 && !hard) {alert(warningText); return; }
+    if (cartype == "Vyber uživatele") warningText += "\nNení vybrán uživatel";
+    if (km.length == 0) warningText += "\nNejsou vyplněné kilometry";
+    if (km > 1000000)   warningText += "\nKilometry jsou vyšší než milion";
+    //if (km < google_lastKm) warningText += "\nKilometry jsou nižší než posledně";
+    if (l.length == 0) warningText += "\nNejsou vyplněné litry";
+
+    if (warningText.length != 0 && !hard) {alert(warningText); return; }
 
     document.getElementById("statusbar").innerHTML="Odesílám, čekej"
     document.getElementById("statusbar").className = "alert alert-warning";
@@ -38,7 +43,65 @@ function submitData(hard = 0) {
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .fillIn(cartype, date, km, l, isfull, isfirst);
+        .fillIn(cartype, Date, km, l);
+}
+function newCar(hard = 0) {
+
+    var carname = document.getElementById('carname').value;
+    var start_km = document.getElementById('start_km').value;
+    var date = new Date().toJSON().slice(0,10);
+    var warningText = "";
+
+    if (carname == "Vyber uživatele") warningText += "\nNení vybrán uživatel";
+    if (start_km.length == 0) warningText += "\nNejsou vyplněné kilometry";
+    if (start_km > 1000000)   warningText += "\nKilometry jsou vyšší než milion";
+    //if (start_km < google_lastKm) warningText += "\nKilometry jsou nižší než posledně";
+
+    if (warningText.length != 0 && !hard) {alert(warningText); return; }
+
+    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
+    document.getElementById("statusbar").className = "alert alert-warning";
+
+    google.script.run
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
+        .registerCar(date, start_km, carname);
+
+}
+
+function submitData(hard = 0) {
+
+    switch (active_form) {
+        case "zaznam":
+            newZaznam(hard);
+        break;
+        case "pridat":
+            newCar(hard);
+        break;
+    }
+}
+
+function switchForms(form = "zaznam") {
+
+    active_form = form;
+
+    switch (form) {
+        case "zaznam":
+            document.getElementById("form_zaznam").style.display = "block";
+            document.getElementById("button_zaznam").className = "btn btn-success";
+            document.getElementById("form_pridat").style.display =  "none";
+            document.getElementById("button_pridat").className = "btn btn-secondary";
+        break;
+        case "pridat":
+            document.getElementById("form_zaznam").style.display =  "none";
+            document.getElementById("button_zaznam").className = "btn btn-secondary";
+            document.getElementById("form_pridat").style.display = "block";
+            document.getElementById("button_pridat").className = "btn btn-success";
+        break;
+    }
+
+
+
 }
 
 </script>
@@ -46,7 +109,28 @@ function submitData(hard = 0) {
 <body>
 
 <div style="width: 350px; margin: auto;">
-    <div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš<form id="formular">
+    <div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš</div>
+
+    <div class="btn-group" role="group" style="width: 100%">
+        <button type="button" class="btn btn-success" onclick='switchForms("zaznam")' id="button_zaznam">Záznam</button>
+        <button type="button" class="btn btn-secondary" onclick='switchForms("pridat")' id="button_pridat">Registrace</button>
+    </div>
+
+    <form id="form_zaznam" style="display: block;">
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
+            <select class="custom-select" id="cartype" style="width: 100%; text-align: center;">
+                <option selected>Vyber uživatele</option>
+                <option value="Karel-Stříbrňák">Karel-Stříbrňák</option>
+                <option value="Karel-Mentolka">Karel-Mentolka</option>
+                <option value="Karel-Nisan">Karel-Nisan</option>
+                <option value="Jakub-Volvo">Jakub-Volvo</option>
+                <option value="Jakub-Mercedes">Jakub-Mercedes</option>
+                <option value="Katka-Saxo">Katka-Saxo</option>
+                <option value="Jitka-Rapid">Jitka-Rapid</option>
+            </select>
+        </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
@@ -58,42 +142,40 @@ function submitData(hard = 0) {
             <input type="number" class="form-control" id="l" style="max-width: 250px">
         </div>
 
-        <div class="custom-control custom-switch" style="text-align: right;">
-            <input type="checkbox" class="custom-control-input" id="full" checked>
-            <label class="custom-control-label" for="full">Natankována plná nádrž</label>
-        </div>
-
-        <div class="custom-control custom-switch" style="text-align: right;">
-            <input type="checkbox" class="custom-control-input" id="isfirst">
-            <label class="custom-control-label" for="isfirst">První tankování s autem!</label>
-        </div>
-
-        <div class="input-group">
-            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Auto</span></div>
-            <select class="custom-select" id="cartype" style="width: 100%">
-                <option selected>Vyber uživatele</option>
-                <option value="Karel-Stříbrňák">Karel, Stříbrňák</option>
-                <option value="Karel-Mentolka">Karel, Mentolka</option>
-                <option value="Karel-Nisan">Karel, Nisan</option>
-                <option value="Jakub-Volvo">Jakub, Volvo</option>
-                <option value="Jakub-Mercedes">Jakub, Mercedes</option>
-                <option value="Katka-Saxo">Katka, Saxo</option>
-                <option value="Jitka-Rapid">Jitka, Rapid</option>
-            </select>
-        </div>
-
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text" style="width: 100px">Datum</span>
             </div>
-            <input type="date" class="form-control" id="date" style="max-width: 250px; text-align: center;">
+            <input type="date" class="form-control" id="Date" style="max-width: 250px; text-align: center;">
+        </div>
+
+        <div class="custom-control custom-switch" style="text-align: right; display: none;">
+            <input type="checkbox" class="custom-control-input" id="full" checked>
+            <label class="custom-control-label" for="full">Natankována plná nádrž</label>
         </div>
 
         <div class="btn-group" role="group" style="width: 100%">
             <button type="button" class="btn btn-primary" onclick='submitData()' >Uložit</button>
         </div>
 
-    </form></div>
+    </form>
+    <form id="form_pridat" style="display: none;">
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Název auta</span></div>
+            <input type="text" class="form-control" id="carname" style="max-width: 250px">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
+            <input type="number" class="form-control" id="start_km" style="max-width: 250px">
+        </div>
+
+        <div class="btn-group" role="group" style="width: 100%">
+            <button type="button" class="btn btn-primary" onclick='submitData()' >Zaregistrovat</button>
+        </div>
+
+    </form>
 </div>
 
 </body>

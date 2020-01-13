@@ -14,52 +14,71 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(data);
 }
 
-function fillIn(carType, datum, km, litry, isfull, isfirst) {
+function fillIn(carType, date, km, litry) {
 
     km=Number(km); litry=Number(litry);
 
-    var sh = openSheet(carType);
+    var sh = openSheet(carType, false);
 
-    if (isfirst) {
-        sh.insertRowBefore(newLine);
-        var values = [[datum, km, ]];
-        sh.getRange("A"+newLine+":B"+newLine).setValues(values);
-        return true;
+    if (km < sh.getRange("B5").getValue()) {
+        notifyUser("Zadané km jsou menší než předchozí.", "Error")
+        var asdf = crashAppQWERTZUIOP; // crash app
+        return false;
     }
-    if (km < sh.getRange("B5").getValue()) return false;
 
     var ujeto = "=(B5-B6)";
     var spotreba = "=(C5/E5)*100";
-    var values = [[datum, km, litry, spotreba, ujeto, isfull, ]];
+    var values = [[date, km, litry, spotreba, ujeto, ]];
     var _msg = "Auto: " +carType
-        +"\nNatankováno dne: " +datum
+        +"\nNatankováno dne: " +date
         +"\nKilometry: " +(km-sh.getRange("B5").getValue()) +" | Litry: " +litry
         +"\nSpotřeba: " +((litry/(km-sh.getRange("B5").getValue()))*100).toFixed(2) +" litrů/100km";
 
     sh.insertRowBefore(newLine);
-    sh.getRange("A"+newLine+":F"+newLine).setValues(values);
-    sendNotification(_msg);
+    sh.getRange("A"+newLine+":E"+newLine).setValues(values);
+    notifyUser(_msg);
+
+    return true;
 }
 
-function sendNotification(_msg) {
+function registerCar(date, km, carType) {
 
-    var sh = openSheet(settingsName);
+    var sh = openSheet(carType, true);
+    sh.insertRowBefore(newLine);
+
+    var values = [[date, km, ]];
+    sh.getRange("A"+newLine+":B"+newLine).setValues(values);
+
+    var _msg = "Vytvořeno auto: " + carType + "\nS počátečním stavem: "+km+" km";
+    notifyUser(_msg);
+
+    return true;
+}
+
+function notifyUser(_msg, _type) {
+
+    if (_type===undefined) var _type = "Ostatní";
+    if (_msg ===undefined) var _msg = "Žádná zpráva";
+    _msg = _type + ": " + _msg;
+
+    var sh = openSheet(settingsName, false);
     if (!sh.getRange("C6").getValue) {return; }
     var userID = sh.getRange("C3").getValue();
     var token  = sh.getRange("C4").getValue();
 
+    Logger.log("Message: " + _msg);
     var url = "https://api.telegram.org/bot" + token;
     url += "/sendMessage?chat_id=" +userID +"&text=" +encodeURI(_msg);
 
     var response = UrlFetchApp.fetch(url);
 }
 
-function reloadSettings(sh) {
+function reloadSettings() {
 
+    var sh = openSheet("Settings", true);
     if (!sh) {
-        var ss = SpreadsheetApp.openById(sheetID);
-        var sh = ss.getSheetByName(settingsName);
-        if (!sh) {sh = ss.insertSheet(settingsName); }
+        notifyUser("Nepovedlo se vytvořit sheet s Nastavením.", "Error");
+        return false;
     }
 
     var values = [
@@ -67,11 +86,13 @@ function reloadSettings(sh) {
         ["Telegram", ""],
         ["", 'User_ID'],
         ["", 'Telegram_token'],
-        ["Notifications", ''],
+        ["Notifycations", ''],
         ["", 'Telegram'],
     ];
 
     sh.getRange("A1:B6").setValues(values);
+
+    notifyUser("Sheet s Nastavením byl vytvořen", "Info");
 }
 
 function loadFromDefault(sh) {
@@ -80,31 +101,41 @@ function loadFromDefault(sh) {
         [templateName, 'Celkem km' , 'Celkem litrů', 'Spotřeba', '', '', ],
         ['', '=SUM(B3:B)', '=SUM(C3:C)', '=if(B2; if(C2; (C2/B2)*100; "Chybí litry"); "Chybí km")', '', '', ],
         ['', '', '', '', '', '', ],
-        ['Datum', 'Kilometry', 'Litry', 'l/100', 'Ujeto', 'Celá?', ],
+        ['date', 'Kilometry', 'Litry', 'l/100', 'Ujeto', 'Celá?', ],
     ];
 
     sh.getRange("A1:F4").setValues(values);
 }
 
-function openSheet(_name) {
+function openSheet(_name, _create) {
+
+    if (_create===undefined) var _create = false;
 
     if (!_name) var name = "test";
 
     var ss = SpreadsheetApp.openById(sheetID);
     var sh = ss.getSheetByName(_name);
 
-    if (sh) {return sh; } // sheet již existuje
+    if (sh) {
+        if (_create) {notifyUser("Sheet "+_name+" již existuje.", "Error"); return false; }
+        else {return sh; }
+    }
 
     else if (_name == settingsName) { // pro nastavení
         sh = ss.insertSheet(_name); // podle šablony níže
         reloadSettings();
+        notifyUser("Sheet "+sheetName+" byl vytvořen podle šablony.");
         return sh;
     }
 
     else { // nový sheet s názvem auta
 
-        sh = ss.getSheetByName(templateName);
+        if (!_create) {
+            notifyUser("Nemám pravomoci vytvořit sheet: " + _name + ".", "Error");
+            return false; // není pravomoce vytvářet
+        }
 
+        sh = ss.getSheetByName(templateName);
         if (!sh) {
             sh = ss.insertSheet(templateName);
             loadFromDefault(sh);
