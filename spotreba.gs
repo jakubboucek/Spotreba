@@ -27,6 +27,7 @@ function doGet(e) {
         +'</script>';
 
 //  Return html
+    notifyUser('webApp_loaded\nUser: '+Session.getActiveUser().getEmail(), 'Status');
     var htmlOutput = variables + HtmlService.createHtmlOutputFromFile('index').getContent();
     return HtmlService.createHtmlOutput(htmlOutput);
 }
@@ -34,7 +35,7 @@ function doGet(e) {
 function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny,km_kilometru) {
 
 //  Prepare variables
-    var _msg =  'Auto: ' + cartype;
+    var _msg =  'Vyplněna jízda\nAuto: ' + cartype;
     var values = [[datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,'=K12']];
 
 //  Write to table
@@ -61,10 +62,10 @@ function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_s
     return true;
 }
 
-function tankCar(tank_cartype, tankovat_date, tankovat_km, tankovat_l, tankovat_cena) {
+function tankCar(carname, tankovat_date, tankovat_km, tankovat_l, tankovat_cena) {
 
-    sh = openSheet(tank_cartype, false);
-    var _msg =  'Auto: ' + tank_cartype;
+    sh = openSheet(carname, false);
+    var _msg =  'Natankováno\nAuto: ' + carname;
     var values = [[tankovat_km, tankovat_cena, tankovat_l]];
 
     sh.insertRowBefore(11);
