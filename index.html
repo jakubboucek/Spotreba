@@ -8,38 +8,38 @@ var active_form = "zaznam";
 
 window.onload = function() {
     document.getElementById('Date').value = new Date().toJSON().slice(0,10);
-    document.getElementById('tankovat_date').value = new Date().toJSON().slice(0,10);
+    document.getElementById('tank_date').value = new Date().toJSON().slice(0,10);
     switchForms();
 }
 
 function onSuccess() {
 
-    document.getElementById("statusbar").innerHTML= ""
-        +'<label>Úspěšně odesláno. :)</label>'
+    document.getElementById("statusbar").innerHTML = 'Úspěšně odesláno. :)';
     document.getElementById("statusbar").className = "alert alert-success";
 
-    var cartype = document.getElementById('cartype').value = "";
-
-    var carname = document.getElementById('carname').value;
+    var carname = document.getElementById('add_carname').value;
     if (carname) {
-        carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
-        var x = document.getElementById("cartype");
+
+        carname = carname;
+
         var option = document.createElement("option");
         option.text = carname; option.value = carname;
-        x.add(option);
-        x = document.getElementById("tank_cartype");
+        document.getElementById('fill_carname').add(option);
+
         option = document.createElement("option");
         option.text = carname; option.value = carname;
-        x.add(option);
+        document.getElementById('tank_carname').add(option);
     }
 
     var deleteThese = [
-        'carname','trasa_odkud','trasa_pres','trasa_kam','trasa_sofer',
-        'trasa_poznamka','km_konecny','km_kilometru','car_username','ownername',
+        'fill_carname', 'add_carname', 'trasa_odkud','trasa_pres','trasa_kam','trasa_sofer',
+        'tank_sofer', 'tank_km', 'tank_l', 'tank_price', 'tank_note',
+        'trasa_poznamka','km_konecny','km_kilometru','car_username','ownername','km_pocatecni',
     ]
     deleteThese.forEach(element => vymazat(element));
 
-    if(document.getElementById('cartype')) document.getElementById('cartype').value = "Vyber uživatele";
+    if(document.getElementById('fill_carname')) document.getElementById('fill_carname').value = "Vyber uživatele";
+    if(document.getElementById('tank_carname')) document.getElementById('tank_carname').value = "Vyber uživatele";
 }
 
 function onFailure() {
@@ -49,80 +49,72 @@ function onFailure() {
 
 function newZaznam(hard = 0) {
 
-    var cartype = document.getElementById('cartype').value;
-    var datum = document.getElementById('Date').value;
-    var trasa_odkud = document.getElementById('trasa_odkud').value;
-    var trasa_pres = document.getElementById('trasa_pres').value;
-    var trasa_kam = document.getElementById('trasa_kam').value;
-    var trasa_typ = document.getElementById('trasa_typ').value;
-    var trasa_sofer = document.getElementById('trasa_sofer').value;
-    var trasa_poznamka = document.getElementById('trasa_poznamka').value;
-    var km_konecny = document.getElementById('km_konecny').value;
-    var km_kilometru = document.getElementById('km_kilometru').value;
+    var val = {
+             type: document.getElementById('trasa_typ').value,
+             date: document.getElementById('Date').value,
+          carname: document.getElementById('fill_carname').value,
+           driver: document.getElementById('trasa_sofer').value,
+            odkud: document.getElementById('trasa_odkud').value,
+             pres: document.getElementById('trasa_pres').value,
+              kam: document.getElementById('trasa_kam').value,
+          konecny: document.getElementById('km_konecny').value,
+        kilometru: document.getElementById('km_kilometru').value,
+             note: document.getElementById('trasa_poznamka').value,
+    }
+
     var warningText = "";
-
-    if (km_konecny&&km_kilometru) warningText += '\nNelze vyplnit kilometry a konečný stav zároveň';
-    if (!km_konecny) km_konecny = false;
-    if (!km_kilometru) km_kilometru = false;
-
-    if (cartype == "Vyber uživatele") warningText += "\nNení vybrán uživatel";
+    if (val.carname == "Vyber uživatele" || !val.carname) {warningText += "\nNení vybrán uživatel"; }
+    if (val.konecny && val.kilometru) {warningText += '\nNelze vyplnit kilometry a konečný stav zároveň'; }
+    if (!val.konecny && !val.kilometru) {warningText += "\nNejsou vyplněné kilometry"; }
     if (warningText.length != 0 && !hard) {alert(warningText); return; }
-
-    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
-    document.getElementById("statusbar").className = "alert alert-warning";
 
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny,km_kilometru);
+        .fillIn(val);
 }
-function newCar(hard = 0) {
+function newCar() {
 
-    var carname = document.getElementById('carname').value;
-    var car_username = document.getElementById('car_username').value;
-    var ownername = document.getElementById('ownername').value;
-    var km_pocatecni = document.getElementById('km_pocatecni').value;
-    var warningText = "";
-
-    carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
-    car_username = car_username.toString().replace( /(<([^>]+)>)/ig, '?!');
-    ownername = ownername.toString().replace( /(<([^>]+)>)/ig, '?!');
-
-    if (warningText.length != 0 && !hard) {alert(warningText); return; }
-
-    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
-    document.getElementById("statusbar").className = "alert alert-warning";
+    var val = {
+        action: "addNewCar",
+         owner: document.getElementById('ownername').value,
+          name: document.getElementById('add_carname').value,
+          user: document.getElementById('car_username').value,
+          date: new Date().toJSON().slice(0,10),
+            km: document.getElementById('km_pocatecni').value,
+    };
 
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .registerCar(carname, ownername, car_username, km_pocatecni);
+        .registerCar(val);
 
 }
 function newTank(hard = 0) {
 
-    var tank_cartype = document.getElementById('tank_cartype').value;
-    var tankovat_km = document.getElementById('tankovat_km').value;
-    var tankovat_l = document.getElementById('tankovat_l').value;
-    var tankovat_date = document.getElementById('tankovat_date').value;
-    var tankovat_cena = document.getElementById('tankovat_cena').value;
-    var warningText = "";
-
-    carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
-
-    if (warningText.length != 0 && !hard) {alert(warningText); return; }
-
-    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
-    document.getElementById("statusbar").className = "alert alert-warning";
+    var val = {
+        action: "tankovani",
+        driver: document.getElementById('tank_sofer').value,
+         price: document.getElementById('tank_price').value,
+          type: 'Tankování',
+          date: document.getElementById('tank_date').value,
+          name: document.getElementById('tank_carname').value,
+          note: document.getElementById('tank_note').value,
+            km: document.getElementById('tank_km').value,
+             l: document.getElementById('tank_l').value,
+    }
 
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .tankCar(tank_cartype, tankovat_date, tankovat_km, tankovat_l, tankovat_cena);
+        .tankCar(val);
 
 }
 
 function submitData(hard = 0) {
+
+    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
+    document.getElementById("statusbar").className = "alert alert-warning";
 
     switch (active_form) {
         case "zaznam":    newZaznam(hard); break;
@@ -203,7 +195,7 @@ function vymazat(_pole) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <select class="custom-select" id="cartype" style="width: 100%; text-align: center;">
+            <select class="custom-select" id="fill_carname" style="width: 100%; text-align: center;">
                 <option selected>Vyber uživatele</option>
                 <script>
                     sheetsNames.forEach(element => document.write(
@@ -262,11 +254,6 @@ function vymazat(_pole) {
             <input type="date" class="form-control" id="Date" style="max-width: 250px; text-align: center;">
         </div>
 
-        <div class="custom-control custom-switch" style="text-align: right; display: none;">
-            <input type="checkbox" class="custom-control-input" id="full" checked>
-            <label class="custom-control-label" for="full">Natankována plná nádrž</label>
-        </div>
-
         <div class="btn-group" role="group" style="width: 100%">
             <button type="button" class="btn btn-primary" onclick='submitData()' >Uložit</button>
         </div>
@@ -277,7 +264,7 @@ function vymazat(_pole) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <select class="custom-select" id="tank_cartype" style="width: 100%; text-align: center;">
+            <select class="custom-select" id="tank_carname" style="width: 100%; text-align: center;">
                 <option selected>Vyber uživatele</option>
                 <script>
                     sheetsNames.forEach(element => document.write(
@@ -288,29 +275,39 @@ function vymazat(_pole) {
         </div>
 
         <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Šofér</span></div>
+            <input type="text" class="form-control" id="tank_sofer" style="max-width: 250px" list="uzivatele_aut">
+        </div>
+
+        <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
-            <input type="number" class="form-control" id="tankovat_km" style="max-width: 250px">
+            <input type="number" class="form-control" id="tank_km" style="max-width: 250px">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Litry</span></div>
-            <input type="number" class="form-control" id="tankovat_l" style="max-width: 250px">
+            <input type="number" class="form-control" id="tank_l" style="max-width: 250px">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Cena</span></div>
-            <input type="number" class="form-control" id="tankovat_cena" style="max-width: 250px">
+            <input type="number" class="form-control" id="tank_price" style="max-width: 250px">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
+            <textarea rows="1" class="form-control" id="tank_note" style="max-width: 250px"></textarea>
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend">
                 <span class="input-group-text" style="width: 100px">Datum</span>
             </div>
-            <input type="date" class="form-control" id="tankovat_date" style="max-width: 250px; text-align: center;">
+            <input type="date" class="form-control" id="tank_date" style="max-width: 250px; text-align: center;">
         </div>
 
         <div class="btn-group" role="group" style="width: 100%">
-            <button type="button" class="btn btn-primary" onclick='submitData()' >Natankovat</button>
+            <button type="button" class="btn btn-primary" onclick='submitData()'>Natankovat</button>
         </div>
 
     </form>
@@ -319,7 +316,7 @@ function vymazat(_pole) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Auto</span></div>
-            <input type="text" class="form-control" id="carname" style="max-width: 250px" placeholder="Název auta">
+            <input type="text" class="form-control" id="add_carname" style="max-width: 250px" placeholder="Název auta">
         </div>
 
         <div class="input-group">

@@ -32,25 +32,25 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(htmlOutput);
 }
 
-function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny,km_kilometru) {
+function fillIn(val) {
 
 //  Prepare variables
-    var _msg =  'Vyplněna jízda\nAuto: ' + cartype;
-    var values = [[datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,'=K12']];
+    var _msg =  'Vyplněna jízda\nAuto: ' + val.carname;
+    var values = [[val.date,val.odkud,val.pres,val.kam,val.type,val.driver,val.note,'=K12']];
 
 //  Write to table
-    var sh = openSheet(cartype, false);
+    var sh = openSheet(val.carname, false);
     sh.insertRowBefore(11);
     sh.getRange('B11:I11').setValues(values);
     notifyUser(_msg, 'Success');
 
-    if (!km_kilometru) {
-        sh.getRange('K11').setValue(Number(km_konecny));
+    if (!val.kilometru) {
+        sh.getRange('K11').setValue(Number(val.konecny));
         var value = '=(K11-I11)';
         sh.getRange('J11').setValue(value);
     }
-    else if (!km_konecny) {
-        sh.getRange('J11').setValue(Number(km_kilometru));
+    else if (!val.konecny) {
+        sh.getRange('J11').setValue(Number(val.kilometru));
         var value = '=(I11+J11)';
         sh.getRange('K11').setValue(value);
     } else {
@@ -62,15 +62,19 @@ function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_s
     return true;
 }
 
-function tankCar(carname, tankovat_date, tankovat_km, tankovat_l, tankovat_cena) {
+function tankCar(val) {
 
-    sh = openSheet(carname, false);
-    var _msg =  'Natankováno\nAuto: ' + carname;
-    var values = [[tankovat_km, tankovat_cena, tankovat_l]];
+    if (val.action != "tankovani") {
+        notifyUser('Badly set parameter. (tank)', "Error");
+        return false;
+    }
+
+    sh = openSheet(val.name, false);
+    var _msg =  'Natankováno\nAuto: ' + val.name;
+    var values = [[val.date,'-','-','-',val.type,val.driver,val.note,'=K12', '=K11-I11', val.km,  val.km, val.price, val.l]];
 
     sh.insertRowBefore(11);
-    sh.getRange('B11').setValue(tankovat_date);
-    sh.getRange('L11:N11').setValues(values);
+    sh.getRange('B11:N11').setValues(values);
 
     notifyUser(_msg, 'Success');
 
@@ -79,16 +83,21 @@ function tankCar(carname, tankovat_date, tankovat_km, tankovat_l, tankovat_cena)
 
 }
 
-function registerCar(carname, ownername, username, km_pocatecni) {
+function registerCar(val) {
 
-    var sh = openSheet(carname, true);
+    if (val.action != 'addNewCar') {
+        notifyUser('Badly set parameter. (add)');
+        return false;
+    }
+
+    var sh = openSheet(val.name, true);
     if (!sh) return false;
 
-    sh.getRange('B1').setValue(ownername);
-    sh.getRange('B2').setValue(username);
-    sh.getRange('K11').setValue(km_pocatecni);
+    sh.getRange('B1').setValue(val.owner);
+    sh.getRange('B2').setValue(val.user);
+    sh.getRange('K11').setValue(val.km);
 
-    var _msg = 'Vytvořeno auto: ' + carname;
+    var _msg = 'Vytvořeno auto: ' + val.name;
     notifyUser(_msg, 'Success');
 
 //  End call
