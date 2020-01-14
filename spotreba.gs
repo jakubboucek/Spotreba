@@ -48,6 +48,23 @@ function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_s
     return true;
 }
 
+function tankCar(tank_cartype, tankovat_date, tankovat_km, tankovat_l, tankovat_cena) {
+
+    sh = openSheet(tank_cartype, false);
+    var _msg =  'Auto: ' + tank_cartype;
+    var values = [[tankovat_km, tankovat_cena, tankovat_l]];
+
+    sh.insertRowBefore(11);
+    sh.getRange('B11').setValue(tankovat_date);
+    sh.getRange('L11:N11').setValues(values);
+
+    notifyUser(_msg, 'Success');
+
+//  End call
+    return true;
+
+}
+
 function registerCar(carname, ownername, username, km_pocatecni) {
 
     var sh = openSheet(carname, true);

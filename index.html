@@ -27,6 +27,10 @@ function onSuccess() {
         var option = document.createElement("option");
         option.text = carname; option.value = carname;
         x.add(option);
+        x = document.getElementById("tank_cartype");
+        option = document.createElement("option");
+        option.text = carname; option.value = carname;
+        x.add(option);
     }
 
     if(document.getElementById('carname')) document.getElementById('carname').value = "";
@@ -38,7 +42,7 @@ function onSuccess() {
     if(document.getElementById('trasa_sofer')) document.getElementById('trasa_sofer').value = "";
     if(document.getElementById('trasa_poznamka')) document.getElementById('trasa_poznamka').value = "";
     if(document.getElementById('km_konecny')) document.getElementById('km_konecny').value = "";
-    if(document.getElementById('username')) document.getElementById('username').value = "";
+    if(document.getElementById('car_username')) document.getElementById('car_username').value = "";
     if(document.getElementById('ownername')) document.getElementById('ownername').value = "";
 }
 
@@ -74,13 +78,13 @@ function newZaznam(hard = 0) {
 function newCar(hard = 0) {
 
     var carname = document.getElementById('carname').value;
-    var username = document.getElementById('username').value;
+    var car_username = document.getElementById('car_username').value;
     var ownername = document.getElementById('ownername').value;
     var km_pocatecni = document.getElementById('km_pocatecni').value;
     var warningText = "";
 
     carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
-    username = username.toString().replace( /(<([^>]+)>)/ig, '?!');
+    car_username = car_username.toString().replace( /(<([^>]+)>)/ig, '?!');
     ownername = ownername.toString().replace( /(<([^>]+)>)/ig, '?!');
 
     if (warningText.length != 0 && !hard) {alert(warningText); return; }
@@ -91,21 +95,19 @@ function newCar(hard = 0) {
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .registerCar(carname, ownername, username, km_pocatecni);
+        .registerCar(carname, ownername, car_username, km_pocatecni);
 
 }
 function newTank(hard = 0) {
 
-    var carname = document.getElementById('carname').value;
-    var start_km = document.getElementById('start_km').value;
-    var date = new Date().toJSON().slice(0,10);
+    var tank_cartype = document.getElementById('tank_cartype').value;
+    var tankovat_km = document.getElementById('tankovat_km').value;
+    var tankovat_l = document.getElementById('tankovat_l').value;
+    var tankovat_date = document.getElementById('tankovat_date').value;
+    var tankovat_cena = document.getElementById('tankovat_cena').value;
     var warningText = "";
 
     carname = carname.toString().replace( /(<([^>]+)>)/ig, '?!');
-
-    if (start_km.length == 0) warningText += "\nNejsou vyplněné kilometry";
-    if (start_km > 1000000)   warningText += "\nKilometry jsou vyšší než milion";
-    //if (start_km < google_lastKm) warningText += "\nKilometry jsou nižší než posledně";
 
     if (warningText.length != 0 && !hard) {alert(warningText); return; }
 
@@ -115,7 +117,7 @@ function newTank(hard = 0) {
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .registerCar(date, start_km, carname);
+        .tankCar(tank_cartype, tankovat_date, tankovat_km, tankovat_l, tankovat_cena);
 
 }
 
@@ -125,7 +127,7 @@ function submitData(hard = 0) {
         case "zaznam":
             newZaznam(hard);
         break;
-        case "tankovat":
+        case "tankovani":
             newTank(hard);
         break;
         case "pridat":
@@ -165,19 +167,32 @@ function switchForms(form = "zaznam") {
         break;
     }
 
-
-
 }
 
 </script>
 
 <body>
 
+<datalist id="uzivatele_aut">
+    <option value="Luboš Hubáček">
+    <option value="Dominik">
+    <option value="Milan">
+    <option value="Další se dají přidat">
+</datalist>
+
+<datalist id="znama_mesta">
+    <option value="Litice">
+    <option value="Praha">
+    <option value="Doubravka">
+    <option value="Plzen">
+    <option value="Další se dají přidat">
+</datalist>
+
 <div style="width: 350px; margin: auto;">
     <div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš</div>
 
     <div class="btn-group" role="group" style="width: 100%">
-        <button type="button" class="btn btn-success" onclick='switchForms("zaznam")' id="button_zaznam">Záznam</button>
+        <button type="button" class="btn btn-success" onclick='switchForms("zaznam")' id="button_zaznam">Jízda</button>
         <button type="button" class="btn btn-secondary" onclick='switchForms("tankovani")' id="button_tankovani">Tankovat</button>
         <button type="button" class="btn btn-secondary" onclick='switchForms("pridat")' id="button_pridat">Registrace</button>
     </div>
@@ -198,17 +213,17 @@ function switchForms(form = "zaznam") {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Odkud</span></div>
-            <input type="text" class="form-control" id="trasa_odkud" style="max-width: 250px">
+            <input type="text" class="form-control" id="trasa_odkud" style="max-width: 250px" list="znama_mesta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Přes</span></div>
-            <input type="text" class="form-control" id="trasa_pres" style="max-width: 250px">
+            <input type="text" class="form-control" id="trasa_pres" style="max-width: 250px" list="znama_mesta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kam</span></div>
-            <input type="text" class="form-control" id="trasa_kam" style="max-width: 250px">
+            <input type="text" class="form-control" id="trasa_kam" style="max-width: 250px" list="znama_mesta">
         </div>
 
         <div class="input-group">
@@ -220,7 +235,7 @@ function switchForms(form = "zaznam") {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Šofér</span></div>
-            <input type="text" class="form-control" id="trasa_sofer" style="max-width: 250px">
+            <input type="text" class="form-control" id="trasa_sofer" style="max-width: 250px" list="uzivatele_aut">
         </div>
 
         <div class="input-group">
@@ -250,15 +265,16 @@ function switchForms(form = "zaznam") {
         </div>
 
     </form>
+
     <form id="form_tankovani" style="display: none;">
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <select class="custom-select" id="tankovane_auto" style="width: 100%; text-align: center;">
+            <select class="custom-select" id="tank_cartype" style="width: 100%; text-align: center;">
                 <option selected>Vyber uživatele</option>
                 <script>
                     sheetsNames.forEach(element => document.write(
-                        '<option value='+window.atob(element)+'>'+window.atob(element)+'</option>')
+                        '<option value="'+decodeURI(element)+'">'+decodeURI(element)+'</option>')
                     );
                 </script>
             </select>
@@ -267,6 +283,16 @@ function switchForms(form = "zaznam") {
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
             <input type="number" class="form-control" id="tankovat_km" style="max-width: 250px">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Litry</span></div>
+            <input type="number" class="form-control" id="tankovat_l" style="max-width: 250px">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Cena</span></div>
+            <input type="number" class="form-control" id="tankovat_cena" style="max-width: 250px">
         </div>
 
         <div class="input-group">
@@ -296,7 +322,7 @@ function switchForms(form = "zaznam") {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Uživatel</span></div>
-            <input type="text" class="form-control" id="username" style="max-width: 250px" placeholder="Zodpovědná osoba">
+            <input type="text" class="form-control" id="car_username" style="max-width: 250px" placeholder="Zodpovědná osoba" list="uzivatele_aut">
         </div>
 
         <div class="input-group">
