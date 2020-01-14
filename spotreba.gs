@@ -31,18 +31,31 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(htmlOutput);
 }
 
-function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny) {
+function fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny,km_kilometru) {
 
 //  Prepare variables
-    var ujeto = '=(K11-I11)';
     var _msg =  'Auto: ' + cartype;
-    var values = [[datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,'=K12',ujeto,km_konecny]];
+    var values = [[datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,'=K12']];
 
 //  Write to table
     var sh = openSheet(cartype, false);
     sh.insertRowBefore(11);
-    sh.getRange('B11:K11').setValues(values);
+    sh.getRange('B11:I11').setValues(values);
     notifyUser(_msg, 'Success');
+
+    if (!km_kilometru) {
+        sh.getRange('K11').setValue(Number(km_konecny));
+        var value = '=(K11-I11)';
+        sh.getRange('J11').setValue(value);
+    }
+    else if (!km_konecny) {
+        sh.getRange('J11').setValue(Number(km_kilometru));
+        var value = '=(I11+J11)';
+        sh.getRange('K11').setValue(value);
+    } else {
+        notifyUser("Kilometry a ujetá vzdálenost nesmějí být vyplněné součastně", 'Error');
+        return false;
+    }
 
 //  End call
     return true;

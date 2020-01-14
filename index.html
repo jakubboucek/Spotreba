@@ -34,14 +34,14 @@ function onSuccess() {
     }
 
     if(document.getElementById('carname')) document.getElementById('carname').value = "";
-    if(document.getElementById('cartype')) document.getElementById('cartype').value = "";
+    if(document.getElementById('cartype')) document.getElementById('cartype').value = "Vyber uživatele";
     if(document.getElementById('trasa_odkud')) document.getElementById('trasa_odkud').value = "";
     if(document.getElementById('trasa_pres')) document.getElementById('trasa_pres').value = "";
     if(document.getElementById('trasa_kam')) document.getElementById('trasa_kam').value = "";
-    if(document.getElementById('trasa_typ')) document.getElementById('trasa_typ').value = "";
     if(document.getElementById('trasa_sofer')) document.getElementById('trasa_sofer').value = "";
     if(document.getElementById('trasa_poznamka')) document.getElementById('trasa_poznamka').value = "";
     if(document.getElementById('km_konecny')) document.getElementById('km_konecny').value = "";
+    if(document.getElementById('km_kilometru')) document.getElementById('km_kilometru').value = "";
     if(document.getElementById('car_username')) document.getElementById('car_username').value = "";
     if(document.getElementById('ownername')) document.getElementById('ownername').value = "";
 }
@@ -62,7 +62,12 @@ function newZaznam(hard = 0) {
     var trasa_sofer = document.getElementById('trasa_sofer').value;
     var trasa_poznamka = document.getElementById('trasa_poznamka').value;
     var km_konecny = document.getElementById('km_konecny').value;
+    var km_kilometru = document.getElementById('km_kilometru').value;
     var warningText = "";
+
+    if (km_konecny&&km_kilometru) warningText += '\nNelze vyplnit kilometry a konečný stav zároveň';
+    if (!km_konecny) km_konecny = false;
+    if (!km_kilometru) km_kilometru = false;
 
     if (cartype == "Vyber uživatele") warningText += "\nNení vybrán uživatel";
     if (warningText.length != 0 && !hard) {alert(warningText); return; }
@@ -73,7 +78,7 @@ function newZaznam(hard = 0) {
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
-        .fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny);
+        .fillIn(cartype,datum,trasa_odkud,trasa_pres,trasa_kam,trasa_typ,trasa_sofer,trasa_poznamka,km_konecny,km_kilometru);
 }
 function newCar(hard = 0) {
 
@@ -124,15 +129,9 @@ function newTank(hard = 0) {
 function submitData(hard = 0) {
 
     switch (active_form) {
-        case "zaznam":
-            newZaznam(hard);
-        break;
-        case "tankovani":
-            newTank(hard);
-        break;
-        case "pridat":
-            newCar(hard);
-        break;
+        case "zaznam":    newZaznam(hard); break;
+        case "tankovani": newTank(hard);   break;
+        case "pridat":    newCar(hard);    break;
     }
 }
 
@@ -167,6 +166,12 @@ function switchForms(form = "zaznam") {
         break;
     }
 
+}
+
+function vymazat(_pole) {
+    if (document.getElementById(_pole).value) {
+        document.getElementById(_pole).value = '';
+    }
 }
 
 </script>
@@ -239,13 +244,18 @@ function switchForms(form = "zaznam") {
         </div>
 
         <div class="input-group">
-            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
-            <textarea rows="1" class="form-control" id="trasa_poznamka" style="max-width: 250px"></textarea>
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Konečný</span></div>
+            <input type="number" class="form-control" id="km_konecny" style="max-width: 250px">
         </div>
 
         <div class="input-group">
-            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Konečný</span></div>
-            <input type="number" class="form-control" id="km_konecny" style="max-width: 250px">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometrů</span></div>
+            <input type="number" class="form-control" id="km_kilometru" style="max-width: 250px">
+        </div>
+
+        <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
+            <textarea rows="1" class="form-control" id="trasa_poznamka" style="max-width: 250px"></textarea>
         </div>
 
         <div class="input-group">
