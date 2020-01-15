@@ -7,28 +7,35 @@
 var active_form = "zaznam";
 
 window.onload = function() {
+
     document.getElementById('Date').value = new Date().toJSON().slice(0,10);
     document.getElementById('tank_date').value = new Date().toJSON().slice(0,10);
+
     switchForms();
+
+    sheetsNames.forEach(function(element){
+        var option = document.createElement("option");
+        option.text = element; option.value = element;
+        document.getElementById('tank_carname').add(option);
+        option = document.createElement("option");
+        option.text = element; option.value = element;
+        document.getElementById('fill_carname').add(option);
+    })
+
 }
 
 function onSuccess() {
 
-    document.getElementById("statusbar").innerHTML = 'Úspěšně odesláno. :)';
-    document.getElementById("statusbar").className = "alert alert-success";
+    document.getElementById("statusbar").innerHTML = 'Dokončuji';
 
     var carname = document.getElementById('add_carname').value;
     if (carname) {
-
-        carname = carname;
-
         var option = document.createElement("option");
         option.text = carname; option.value = carname;
-        document.getElementById('fill_carname').add(option);
-
+        document.getElementById('fill_carname').append(option);
         option = document.createElement("option");
         option.text = carname; option.value = carname;
-        document.getElementById('tank_carname').add(option);
+        document.getElementById('tank_carname').append(option);
     }
 
     var deleteThese = [
@@ -40,6 +47,9 @@ function onSuccess() {
 
     if(document.getElementById('fill_carname')) document.getElementById('fill_carname').value = "Vyber uživatele";
     if(document.getElementById('tank_carname')) document.getElementById('tank_carname').value = "Vyber uživatele";
+
+    document.getElementById("statusbar").innerHTML = 'Úspěšně odesláno. :)';
+    document.getElementById("statusbar").className = "alert alert-success";
 }
 
 function onFailure() {
@@ -197,11 +207,6 @@ function vymazat(_pole) {
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
             <select class="custom-select" id="fill_carname" style="width: 100%; text-align: center;">
                 <option selected>Vyber uživatele</option>
-                <script>
-                    sheetsNames.forEach(element => document.write(
-                        '<option value="'+decodeURI(element)+'">'+decodeURI(element)+'</option>')
-                    );
-                </script>
             </select>
         </div>
 
@@ -266,11 +271,6 @@ function vymazat(_pole) {
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
             <select class="custom-select" id="tank_carname" style="width: 100%; text-align: center;">
                 <option selected>Vyber uživatele</option>
-                <script>
-                    sheetsNames.forEach(element => document.write(
-                        '<option value="'+decodeURI(element)+'">'+decodeURI(element)+'</option>')
-                    );
-                </script>
             </select>
         </div>
 

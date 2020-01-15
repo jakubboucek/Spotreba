@@ -13,7 +13,6 @@ function doGet(e) {
     for (var i=0;i<sheets.length;i++) {
         _name = sheets[i].getName();
         if (_name!=settingsName&&_name!=templateName) {
-            _name=encodeURI(_name);
             sheetsNames+='\''+_name+'\',';
         }
     }
