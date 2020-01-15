@@ -41,7 +41,6 @@ function fillIn(val) {
     var sh = openSheet(val.carname, false);
     sh.insertRowBefore(11);
     sh.getRange('B11:I11').setValues(values);
-    notifyUser(_msg, 'Success');
 
     if (!val.kilometru) {
         sh.getRange('K11').setValue(Number(val.konecny));
@@ -58,6 +57,7 @@ function fillIn(val) {
     }
 
 //  End call
+    notifyUser(_msg, 'Success');
     return true;
 }
 
@@ -95,9 +95,6 @@ function registerCar(val) {
     sh.getRange('B1').setValue(val.owner);
     sh.getRange('B2').setValue(val.user);
     sh.getRange('K11').setValue(val.km);
-
-    var _msg = 'Vytvořeno auto: ' + val.name;
-    notifyUser(_msg, 'Success');
 
 //  End call
     return true;
@@ -194,13 +191,16 @@ function openSheet(_name, _create) {
     //  Get template
         sh = ss.getSheetByName(templateName);
         if (!sh) { //  no template
-        //  Create Template from defaults
-            sh = ss.insertSheet(templateName);
-            loadFromDefault(sh);
+            notifyUser("No template found", "Warning");
+            return ss.insertSheet(_name);
         }
 
     //  Copy template as new sheet and return it
-        sh = sh.copyTo(ss).setName(_name); return sh;
+        sh = sh.copyTo(ss).setName(_name);
+
+        notifyUser(('Vytvořeno auto: ' + _name), 'Success');
+        return sh;
+
     }
 
     notifyUser('Neočekávaná chyba ve funkci "openSheet".', "Warning");
