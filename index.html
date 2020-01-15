@@ -41,7 +41,7 @@ function onSuccess() {
     var deleteThese = [
         'fill_carname', 'add_carname', 'trasa_odkud','trasa_pres','trasa_kam','trasa_sofer',
         'tank_sofer', 'tank_km', 'tank_l', 'tank_price', 'tank_note',
-        'trasa_poznamka','km_konecny','km_kilometru','car_username','ownername','km_pocatecni',
+        'trasa_poznamka','km_konecny','km_kilometru','add_user','add_owner','add_pocatecni',
     ]
     deleteThese.forEach(element => vymazat(element));
 
@@ -87,11 +87,11 @@ function newCar() {
 
     var val = {
         action: "addNewCar",
-         owner: document.getElementById('ownername').value,
+         owner: document.getElementById('add_owner').value,
           name: document.getElementById('add_carname').value,
-          user: document.getElementById('car_username').value,
+          user: document.getElementById('add_user').value,
           date: new Date().toJSON().slice(0,10),
-            km: document.getElementById('km_pocatecni').value,
+            km: document.getElementById('add_pocatecni').value,
     };
 
     google.script.run
@@ -259,10 +259,6 @@ function vymazat(_pole) {
             <input type="date" class="form-control" id="Date" style="max-width: 250px; text-align: center;">
         </div>
 
-        <div class="btn-group" role="group" style="width: 100%">
-            <button type="button" class="btn btn-primary" onclick='submitData()' >Uložit</button>
-        </div>
-
     </form>
 
     <form id="form_tankovani" style="display: none;">
@@ -306,10 +302,6 @@ function vymazat(_pole) {
             <input type="date" class="form-control" id="tank_date" style="max-width: 250px; text-align: center;">
         </div>
 
-        <div class="btn-group" role="group" style="width: 100%">
-            <button type="button" class="btn btn-primary" onclick='submitData()'>Natankovat</button>
-        </div>
-
     </form>
 
     <form id="form_pridat" style="display: none;">
@@ -321,17 +313,17 @@ function vymazat(_pole) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Vlastník</span></div>
-            <input type="text" class="form-control" id="ownername" style="max-width: 250px" placeholder="Majitel auta">
+            <input type="text" class="form-control" id="add_owner" style="max-width: 250px" placeholder="Majitel auta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Uživatel</span></div>
-            <input type="text" class="form-control" id="car_username" style="max-width: 250px" placeholder="Zodpovědná osoba" list="uzivatele_aut">
+            <input type="text" class="form-control" id="add_user" style="max-width: 250px" placeholder="Zodpovědná osoba" list="uzivatele_aut">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Stav</span></div>
-            <input type="text" class="form-control" id="km_pocatecni" style="max-width: 250px" placeholder="Stav tachometru">
+            <input type="number" class="form-control" id="km_pocatecni" style="max-width: 250px" placeholder="Stav tachometru">
         </div>
 
         <div class="btn-group" role="group" style="width: 100%">
@@ -339,6 +331,11 @@ function vymazat(_pole) {
         </div>
 
     </form>
+
+    <div class="btn-group" role="group" style="width: 100%">
+        <button type="button" class="btn btn-primary" onclick='submitData()' >Potvrdit</button>
+    </div>
+
 </div>
 
 </body>
