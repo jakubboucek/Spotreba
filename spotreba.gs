@@ -13,7 +13,6 @@ function doGet(e) {
     for (var i=0;i<sheets.length;i++) {
         _name = sheets[i].getName();
         if (_name!=settingsName&&_name!=templateName) {
-            _name=Utilities.base64Encode(_name);
             sheetsNames+='\''+_name+'\',';
         }
     }
@@ -27,54 +26,77 @@ function doGet(e) {
         +'</script>';
 
 //  Return html
+    notifyUser('webApp_loaded\nUser: '+Session.getActiveUser().getEmail(), 'Status');
     var htmlOutput = variables + HtmlService.createHtmlOutputFromFile('index').getContent();
     return HtmlService.createHtmlOutput(htmlOutput);
 }
 
-function fillIn(carType, date, km, litry) {
-
-//  Check if km is bigger than last km
-    km = Number(km); litry = Number(litry);
-    var sh = openSheet(carType, false);
-
-    if (km <= sh.getRange('B5').getValue()) {
-        notifyUser('Zadané km jsou menší nebo stejné než předchozí.', 'Error')
-        return false;
-    }
+function fillIn(val) {
 
 //  Prepare variables
-    var ujeto = '=(B5-B6)';
-    var spotreba = '=(C5/E5)*100';
-    var spocitane_sp = ((litry/(km-sh.getRange('B5').getValue()))*100).toFixed(2);
-    var spocitane_km = (km-sh.getRange('B5').getValue());
-    var values = [[date, km, litry, spotreba, ujeto]];
-
-    var _msg =  'Auto: ' + carType
-        +'\nTankováno: ' + date
-        +'\nKilometry: ' + spocitane_km +' km / Litry: ' +litry +' l'
-        +'\nSpotřeba : ' + spocitane_sp +' litrů/100km';
+    var _msg =  'Vyplněna jízda\nAuto: ' + val.carname;
+    var values = [[val.date,val.odkud,val.pres,val.kam,val.type,val.driver,val.note,'=K12']];
 
 //  Write to table
-    sh.insertRowBefore(5);
-    sh.getRange('A5:E5').setValues(values);
-
+    var sh = openSheet(val.carname, false);
+    sh.insertRowBefore(11);
+    sh.getRange('B11:I11').setValues(values);
     notifyUser(_msg, 'Success');
+
+    if (!val.kilometru) {
+        sh.getRange('K11').setValue(Number(val.konecny));
+        var value = '=(K11-I11)';
+        sh.getRange('J11').setValue(value);
+    }
+    else if (!val.konecny) {
+        sh.getRange('J11').setValue(Number(val.kilometru));
+        var value = '=(I11+J11)';
+        sh.getRange('K11').setValue(value);
+    } else {
+        notifyUser("Kilometry a ujetá vzdálenost nesmějí být vyplněné součastně", 'Error');
+        return false;
+    }
 
 //  End call
     return true;
 }
 
-function registerCar(date, km, carType) {
+function tankCar(val) {
 
-    var sh = openSheet(carType, true);
+    if (val.action != "tankovani") {
+        notifyUser('Badly set parameter. (tank)', "Error");
+        return false;
+    }
+
+    sh = openSheet(val.name, false);
+    var _msg =  'Natankováno\nAuto: ' + val.name;
+    var values = [[val.date,'-','-','-',val.type,val.driver,val.note,'=K12', '=K11-I11', val.km,  val.km, val.price, val.l]];
+
+    sh.insertRowBefore(11);
+    sh.getRange('B11:N11').setValues(values);
+
+    notifyUser(_msg, 'Success');
+
+//  End call
+    return true;
+
+}
+
+function registerCar(val) {
+
+    if (val.action != 'addNewCar') {
+        notifyUser('Badly set parameter. (add)');
+        return false;
+    }
+
+    var sh = openSheet(val.name, true);
     if (!sh) return false;
 
-    var values = [[date, km]];
-    var _msg = 'Vytvořeno auto: ' + carType + '\nS počátečním stavem: '+km+' km';
+    sh.getRange('B1').setValue(val.owner);
+    sh.getRange('B2').setValue(val.user);
+    sh.getRange('K11').setValue(val.km);
 
-    sh.insertRowBefore(5);
-    sh.getRange('A5:B5').setValues(values);
-
+    var _msg = 'Vytvořeno auto: ' + val.name;
     notifyUser(_msg, 'Success');
 
 //  End call
