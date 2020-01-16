@@ -116,9 +116,11 @@ function registerCar(val, hard) {
     var sh = openSheet(val.add_name, true);
     if (!sh) return false;
 
+    var values = [[val.add_date,'-','-','-','Vytvořeno','-','-','-', '-', val.add_km]];
+
     sh.getRange('B1').setValue(val.add_owner);
     sh.getRange('B2').setValue(val.add_user);
-    sh.getRange('K11').setValue(val.add_km);
+    sh.getRange('B11:K11').setValues(values);
 
 //  End call
     return true;
