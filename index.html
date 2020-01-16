@@ -15,11 +15,8 @@ window.onload = function() {
 
     sheetsNames.forEach(function(element){
         var option = document.createElement("option");
-        option.text = element; option.value = element;
-        document.getElementById('tank_carname').add(option);
-        option = document.createElement("option");
-        option.text = element; option.value = element;
-        document.getElementById('fill_carname').add(option);
+        option.value = element;
+        document.getElementById('znama_auta').append(option);
     })
 
 }
@@ -28,25 +25,22 @@ function onSuccess() {
 
     document.getElementById("statusbar").innerHTML = 'Dokončuji';
 
-    var carname = document.getElementById('add_carname').value;
-    if (carname) {
+    var name = document.getElementById('add_name').value;
+    if (name) {
         var option = document.createElement("option");
-        option.text = carname; option.value = carname;
-        document.getElementById('fill_carname').append(option);
-        option = document.createElement("option");
-        option.text = carname; option.value = carname;
-        document.getElementById('tank_carname').append(option);
+        option.value = name;
+        document.getElementById('znama_auta').append(option);
     }
 
     var deleteThese = [
-        'fill_carname', 'add_carname', 'trasa_odkud','trasa_pres','trasa_kam','trasa_sofer',
+        'trasa_name', 'add_name', 'trasa_odkud','trasa_pres','trasa_kam','trasa_sofer',
         'tank_sofer', 'tank_km', 'tank_l', 'tank_price', 'tank_note',
         'trasa_poznamka','km_konecny','km_kilometru','add_user','add_owner','add_pocatecni',
     ]
     deleteThese.forEach(element => vymazat(element));
 
-    if(document.getElementById('fill_carname')) document.getElementById('fill_carname').value = "Vyber uživatele";
-    if(document.getElementById('tank_carname')) document.getElementById('tank_carname').value = "Vyber uživatele";
+    if(document.getElementById('trasa_name')) document.getElementById('trasa_name').value = "";
+    if(document.getElementById('tank_name')) document.getElementById('tank_name').value = "";
 
     document.getElementById("statusbar").innerHTML = 'Úspěšně odesláno. :)';
     document.getElementById("statusbar").className = "alert alert-success";
@@ -92,20 +86,20 @@ function submitData(hard = 0) { // !TODO: datum registrace auta se nevyplní
         tank_driver: document.getElementById('tank_sofer').value,
          tank_price: document.getElementById('tank_price').value,
           tank_date: document.getElementById('tank_date').value,
-          tank_name: document.getElementById('tank_carname').value,
+          tank_name: document.getElementById('tank_name').value,
           tank_note: document.getElementById('tank_note').value,
             tank_km: document.getElementById('tank_km').value,
              tank_l: document.getElementById('tank_l').value,
 
           add_owner: document.getElementById('add_owner').value,
-           add_name: document.getElementById('add_carname').value,
+           add_name: document.getElementById('add_name').value,
            add_user: document.getElementById('add_user').value,
            add_date: new Date().toJSON().slice(0,10),
              add_km: document.getElementById('add_pocatecni').value,
 
           fill_type: document.getElementById('trasa_typ').value,
           fill_date: document.getElementById('Date').value,
-       fill_carname: document.getElementById('fill_carname').value,
+          fill_name: document.getElementById('trasa_name').value,
         fill_driver: document.getElementById('trasa_sofer').value,
          fill_odkud: document.getElementById('trasa_odkud').value,
           fill_pres: document.getElementById('trasa_pres').value,
@@ -180,18 +174,18 @@ function checkValues(val) {
 
     switch(val.action) {
         case fill_action_name:
-            if (!val.fill_carname) chyba += "\nChybí: Auto";
+            if (!val.fill_name) chyba += "\nChybí: Auto";
             if (val.fill_kilometru&&val.fill_konecny) chyba += "\nNesmí být zadán konečný a kilometrů zároveň";
             if (!val.fill_kilometru&&!val.fill_konecny) chyba += "\nChybí: Kilometry";
         break;
         case tank_action_name:
-            if (!val.tank_carname) chyba += "\nChybí: Auto";
+            if (!val.tank_name) chyba += "\nChybí: Auto";
             if (!val.tank_km) chyba += "\nChybí: Kilometry";
             if (!val.tank_l) chyba += "\nChybí: Litry";
             if (!val.tank_price) chyba += "\nChybí: Cena";
         break;
         case add_action_name:
-            if (!val.add_carname) chyba += "\nChybí: Název auta";
+            if (!val.add_name) chyba += "\nChybí: Název auta";
             if (!val.add_owner) chyba += "\nChybí: Majitel auta";
             if (!val.add_km) chyba += "\nChybí: Stav tachometru";
         break;
@@ -206,7 +200,7 @@ function checkValues(val) {
 <body>
 
 <datalist id="uzivatele_aut">
-    <option value="Luboš Hubáček">
+    <option value="Luboš">
     <option value="Dominik">
     <option value="Milan">
     <option value="Další se dají přidat">
@@ -219,6 +213,9 @@ function checkValues(val) {
     <option value="Plzeň">
     <option value="Habrmannovo náměstí">
     <option value="Další se dají přidat">
+</datalist>
+
+<datalist id="znama_auta">
 </datalist>
 
 <div style="width: 350px; margin: auto;">
@@ -234,9 +231,7 @@ function checkValues(val) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <select class="custom-select" id="fill_carname" style="width: 100%; text-align: center;">
-                <option value="" selected>Vyber uživatele</option>
-            </select>
+            <input type="text" class="form-control" id='trasa_name' style="max-width: 250px" list="znama_auta">
         </div>
 
         <div class="input-group">
@@ -294,9 +289,7 @@ function checkValues(val) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <select class="custom-select" id="tank_carname" style="width: 100%; text-align: center;">
-                <option selected>Vyber uživatele</option>
-            </select>
+            <input type="text" class="form-control" id="tank_name" style="max-width: 250px" list="znama_auta">
         </div>
 
         <div class="input-group">
@@ -337,7 +330,7 @@ function checkValues(val) {
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Auto</span></div>
-            <input type="text" class="form-control" id="add_carname" style="max-width: 250px" placeholder="Název auta">
+            <input type="text" class="form-control" id="add_name" style="max-width: 250px" placeholder="Název auta">
         </div>
 
         <div class="input-group">

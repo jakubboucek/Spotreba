@@ -48,11 +48,11 @@ function fillIn(val) {
     }
 
 //  Prepare variables
-    var _msg =  'Vyplněna jízda\nAuto: ' + val.fill_carname;
+    var _msg =  'Vyplněna jízda\nAuto: ' + val.fill_name;
     var values = [[val.fill_date,val.fill_odkud,val.fill_pres,val.fill_kam,val.fill_type,val.fill_driver,val.fill_note,'=K12']];
 
 //  Write to table
-    var sh = openSheet(val.fill_carname, false);
+    var sh = openSheet(val.fill_name, false);
     sh.insertRowBefore(11);
     sh.getRange('B11:I11').setValues(values);
 
