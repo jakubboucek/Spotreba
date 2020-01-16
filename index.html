@@ -103,10 +103,9 @@ function newCar() {
 function newTank(hard = 0) {
 
     var val = {
-        action: "tankovani",
+        action: tank_action_name,
         driver: document.getElementById('tank_sofer').value,
          price: document.getElementById('tank_price').value,
-          type: 'Tankování',
           date: document.getElementById('tank_date').value,
           name: document.getElementById('tank_carname').value,
           note: document.getElementById('tank_note').value,
@@ -128,7 +127,7 @@ function submitData(hard = 0) {
 
     switch (active_form) {
         case "zaznam":    newZaznam(hard); break;
-        case "tankovani": newTank(hard);   break;
+        case tank_action_name: newTank(hard);   break;
         case "pridat":    newCar(hard);    break;
     }
 }
@@ -146,7 +145,7 @@ function switchForms(form = "zaznam") {
             document.getElementById("form_tankovani").style.display =  "none";
             document.getElementById("button_tankovani").className = "btn btn-secondary";
         break;
-        case "tankovani":
+        case tank_action_name:
             document.getElementById("form_zaznam").style.display =  "none";
             document.getElementById("button_zaznam").className = "btn btn-secondary";
             document.getElementById("form_pridat").style.display = "none";
@@ -197,7 +196,7 @@ function vymazat(_pole) {
 
     <div class="btn-group" role="group" style="width: 100%">
         <button type="button" class="btn btn-success" onclick='switchForms("zaznam")' id="button_zaznam">Jízda</button>
-        <button type="button" class="btn btn-secondary" onclick='switchForms("tankovani")' id="button_tankovani">Tankovat</button>
+        <button type="button" class="btn btn-secondary" onclick='switchForms(tank_action_name)' id="button_tankovani">Tankovat</button>
         <button type="button" class="btn btn-secondary" onclick='switchForms("pridat")' id="button_pridat">Registrace</button>
     </div>
 
@@ -329,7 +328,7 @@ function vymazat(_pole) {
     </form>
 
     <div class="btn-group" role="group" style="width: 100%">
-        <button type="button" class="btn btn-primary" onclick='submitData()' >Potvrdit</button>
+        <button type="button" class="btn btn-primary" onclick='submitData()' >Potvrdit ! :) </button>
     </div>
 
 </div>

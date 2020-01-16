@@ -3,6 +3,7 @@ var sheetName    = 'Spotřeba';
 var settingsName = 'Settings';
 var templateName = 'Template';
 var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
+var tank_action_name = "Tankování";
 
 function doGet(e) {
 
@@ -23,6 +24,7 @@ function doGet(e) {
         +'<script>'
             +'var webappURL = "' + webappURL + '";'
             +'var sheetsNames = [' + sheetsNames + '];'
+            +'var tank_action_name = "' + tank_action_name + '";'
         +'</script>';
 
 //  Return html
@@ -63,14 +65,14 @@ function fillIn(val) {
 
 function tankCar(val) {
 
-    if (val.action != "tankovani") {
+    if (val.action != tank_action_name) {
         notifyUser('Badly set parameter. (tank)', "Error");
         return false;
     }
 
     sh = openSheet(val.name, false);
     var _msg =  'Natankováno\nAuto: ' + val.name;
-    var values = [[val.date,'-','-','-',val.type,val.driver,val.note,'=K12', '=K11-I11', val.km,  val.km, val.price, val.l]];
+    var values = [[val.date,'-','-','-',val.action,val.driver,val.note,'=K12', '=K11-I11', val.km,  val.km, val.price, val.l]];
 
     sh.insertRowBefore(11);
     sh.getRange('B11:N11').setValues(values);
