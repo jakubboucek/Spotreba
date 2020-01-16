@@ -21,8 +21,9 @@ window.onload = function() {
 
 }
 
-function onSuccess() {
+function onSuccess(result) {
 
+    if (!result) {onFailure(); return; }
     document.getElementById('statusbar').innerHTML = 'Dokončuji';
 
 //  Přidat do listu známých aut nově zaregistrované auto
@@ -158,7 +159,7 @@ function checkValues(val, skip=0) {
     switch(val.action) {
         case fill_action_name:
             if (!val.fill_name)  chyba += "Auto, ";
-            //if (val.fill_kilometru&&val.fill_konecny) chyba += "\nNesmí být zadán konečný a kilometrů zároveň";
+            if (val.fill_kilometru&&val.fill_konecny) {return("Nesmí být zadán konečný stav a počet ujetých kilometrů zároveň!"); }
             if (!val.fill_kilometru&&!val.fill_konecny) chyba += "Kilometry, ";
         break;
         case tank_action_name:

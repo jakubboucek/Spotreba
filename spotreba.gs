@@ -63,22 +63,23 @@ function fillIn(val, hard) {
 
 //  Write to table
     var sh = openSheet(val.fill_name, false);
-    sh.insertRowBefore(11);
-    sh.getRange('B11:I11').setValues(values);
+    sh.getRange('B10:I10').setValues(values);
 
     if (!val.fill_kilometru) {
-        sh.getRange('K11').setValue(Number(val.fill_konecny));
-        var value = '=(K11-I11)';
-        sh.getRange('J11').setValue(value);
+        sh.getRange('K10').setValue(Number(val.fill_konecny));
+        var value = '=(K10-I10)';
+        sh.getRange('J10').setValue(value);
     }
     else if (!val.fill_konecny) {
-        sh.getRange('J11').setValue(Number(val.fill_kilometru));
-        var value = '=(I11+J11)';
-        sh.getRange('K11').setValue(value);
+        sh.getRange('J10').setValue(Number(val.fill_kilometru));
+        var value = '=(I10+J10)';
+        sh.getRange('K10').setValue(value);
     } else {
         notifyUser("Kilometry a ujetá vzdálenost nesmějí být vyplněné součastně", 'Error');
+        sh.getRange("A10:O10").setValue("");
         return false;
     }
+    sh.insertRowBefore(10);
 
 //  End call
     notifyUser(_msg, 'Success');
@@ -94,10 +95,10 @@ function tankCar(val, hard) {
 
     sh = openSheet(val.tank_name, false);
     var _msg =  'Natankováno\nAuto: ' + val.tank_name;
-    var values = [[val.tank_date,'-','-','-',val.action,val.tank_driver,val.tank_note,'=K12', '=K11-I11', val.tank_km,  val.tank_km, val.tank_price, val.tank_l]];
+    var values = [[val.tank_date,'-','-','-',val.action,val.tank_driver,val.tank_note,'=K11', '=K10-I10', val.tank_km,  val.tank_km, val.tank_price, val.tank_l]];
 
-    sh.insertRowBefore(11);
-    sh.getRange('B11:N11').setValues(values);
+    sh.getRange('B10:N10').setValues(values);
+    sh.insertRowBefore(10);
 
     notifyUser(_msg, 'Success');
 
@@ -116,7 +117,7 @@ function registerCar(val, hard) {
     var sh = openSheet(val.add_name, true);
     if (!sh) return false;
 
-    var values = [[val.add_date,'-','-','-','Vytvořeno','-','-','-', '-', val.add_km]];
+    var values = [[val.add_date,'-','-','-','Vytvořeno','-','-','-','-', val.add_km]];
 
     sh.getRange('B1').setValue(val.add_owner);
     sh.getRange('B2').setValue(val.add_user);
