@@ -48,21 +48,21 @@ function fillIn(val) {
     }
 
 //  Prepare variables
-    var _msg =  'Vyplněna jízda\nAuto: ' + val.carname;
-    var values = [[val.date,val.odkud,val.pres,val.kam,val.type,val.driver,val.note,'=K12']];
+    var _msg =  'Vyplněna jízda\nAuto: ' + val.fill_carname;
+    var values = [[val.fill_date,val.fill_odkud,val.fill_pres,val.fill_kam,val.fill_type,val.fill_driver,val.fill_note,'=K12']];
 
 //  Write to table
-    var sh = openSheet(val.carname, false);
+    var sh = openSheet(val.fill_carname, false);
     sh.insertRowBefore(11);
     sh.getRange('B11:I11').setValues(values);
 
-    if (!val.kilometru) {
-        sh.getRange('K11').setValue(Number(val.konecny));
+    if (!val.fill_kilometru) {
+        sh.getRange('K11').setValue(Number(val.fill_konecny));
         var value = '=(K11-I11)';
         sh.getRange('J11').setValue(value);
     }
-    else if (!val.konecny) {
-        sh.getRange('J11').setValue(Number(val.kilometru));
+    else if (!val.fill_konecny) {
+        sh.getRange('J11').setValue(Number(val.fill_kilometru));
         var value = '=(I11+J11)';
         sh.getRange('K11').setValue(value);
     } else {
@@ -82,9 +82,9 @@ function tankCar(val) {
         return false;
     }
 
-    sh = openSheet(val.name, false);
-    var _msg =  'Natankováno\nAuto: ' + val.name;
-    var values = [[val.date,'-','-','-',val.action,val.driver,val.note,'=K12', '=K11-I11', val.km,  val.km, val.price, val.l]];
+    sh = openSheet(val.tank_name, false);
+    var _msg =  'Natankováno\nAuto: ' + val.tank_name;
+    var values = [[val.tank_date,'-','-','-',val.action,val.tank_driver,val.tank_note,'=K12', '=K11-I11', val.tank_km,  val.tank_km, val.tank_price, val.tank_l]];
 
     sh.insertRowBefore(11);
     sh.getRange('B11:N11').setValues(values);
@@ -103,12 +103,12 @@ function registerCar(val) {
         return false;
     }
 
-    var sh = openSheet(val.name, true);
+    var sh = openSheet(val.add_name, true);
     if (!sh) return false;
 
-    sh.getRange('B1').setValue(val.owner);
-    sh.getRange('B2').setValue(val.user);
-    sh.getRange('K11').setValue(val.km);
+    sh.getRange('B1').setValue(val.add_owner);
+    sh.getRange('B2').setValue(val.add_user);
+    sh.getRange('K11').setValue(val.add_km);
 
 //  End call
     return true;

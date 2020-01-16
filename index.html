@@ -59,34 +59,12 @@ function onFailure() {
 
 function newZaznam(val, hard = 0) {
 
-
-
-    var chyba = checkValues(val);
-    if (chyba) {
-        alert(chyba);
-        return false;
-    }
-
-    var warningText = "";
-    if (val.carname == "Vyber uživatele" || !val.carname) {warningText += "\nNení vybrán uživatel"; }
-    if (val.konecny && val.kilometru) {warningText += '\nNelze vyplnit kilometry a konečný stav zároveň'; }
-    if (!val.konecny && !val.kilometru) {warningText += "\nNejsou vyplněné kilometry"; }
-    if (warningText.length != 0 && !hard) {alert(warningText); return; }
-
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
         .fillIn(val);
 }
 function newCar(val, hard = 0) {
-
-
-
-    var chyba = checkValues(val);
-    if (chyba) {
-        alert(chyba);
-        return false;
-    }
 
     google.script.run
         .withSuccessHandler(onSuccess)
@@ -96,14 +74,6 @@ function newCar(val, hard = 0) {
 }
 function newTank(val, hard = 0) {
 
-
-
-    var chyba = checkValues(val);
-    if (chyba) {
-        alert(chyba);
-        return false;
-    }
-
     google.script.run
         .withSuccessHandler(onSuccess)
         .withFailureHandler(onFailure)
@@ -111,56 +81,55 @@ function newTank(val, hard = 0) {
 
 }
 
-function submitData(hard = 0) {
+function submitData(hard = 0) { // !TODO: datum registrace auta se nevyplní
 
     document.getElementById("statusbar").innerHTML="Odesílám, čekej"
     document.getElementById("statusbar").className = "alert alert-warning";
 
+    var val = {
+             action: active_form,
+
+        tank_driver: document.getElementById('tank_sofer').value,
+         tank_price: document.getElementById('tank_price').value,
+          tank_date: document.getElementById('tank_date').value,
+          tank_name: document.getElementById('tank_carname').value,
+          tank_note: document.getElementById('tank_note').value,
+            tank_km: document.getElementById('tank_km').value,
+             tank_l: document.getElementById('tank_l').value,
+
+          add_owner: document.getElementById('add_owner').value,
+           add_name: document.getElementById('add_carname').value,
+           add_user: document.getElementById('add_user').value,
+           add_date: new Date().toJSON().slice(0,10),
+             add_km: document.getElementById('add_pocatecni').value,
+
+          fill_type: document.getElementById('trasa_typ').value,
+          fill_date: document.getElementById('Date').value,
+       fill_carname: document.getElementById('fill_carname').value,
+        fill_driver: document.getElementById('trasa_sofer').value,
+         fill_odkud: document.getElementById('trasa_odkud').value,
+          fill_pres: document.getElementById('trasa_pres').value,
+           fill_kam: document.getElementById('trasa_kam').value,
+       fill_konecny: document.getElementById('km_konecny').value,
+     fill_kilometru: document.getElementById('km_kilometru').value,
+          fill_note: document.getElementById('trasa_poznamka').value,
+    }
+
+    var chyba = checkValues(val);
+    if (chyba) {
+        document.getElementById("statusbar").innerHTML=chyba;
+        document.getElementById("statusbar").className = "alert alert-danger";
+        return false;
+    }
+
     switch (active_form) {
         case fill_action_name:
-
-            var val = {
-               action: fill_action_name,
-                 type: document.getElementById('trasa_typ').value,
-                 date: document.getElementById('Date').value,
-              carname: document.getElementById('fill_carname').value,
-               driver: document.getElementById('trasa_sofer').value,
-                odkud: document.getElementById('trasa_odkud').value,
-                 pres: document.getElementById('trasa_pres').value,
-                  kam: document.getElementById('trasa_kam').value,
-              konecny: document.getElementById('km_konecny').value,
-            kilometru: document.getElementById('km_kilometru').value,
-                 note: document.getElementById('trasa_poznamka').value,
-            }
-
             newZaznam(val, hard);
             break;
         case tank_action_name:
-
-            var val = {
-                action: tank_action_name, // !TODO: try change this to active_form :)
-                driver: document.getElementById('tank_sofer').value,
-                 price: document.getElementById('tank_price').value,
-                  date: document.getElementById('tank_date').value,
-                  name: document.getElementById('tank_carname').value,
-                  note: document.getElementById('tank_note').value,
-                    km: document.getElementById('tank_km').value,
-                     l: document.getElementById('tank_l').value,
-            }
-
             newTank(val, hard);
             break;
         case add_action_name:
-
-            var val = {
-                action: add_action_name,
-                 owner: document.getElementById('add_owner').value,
-                  name: document.getElementById('add_carname').value,
-                  user: document.getElementById('add_user').value,
-                  date: new Date().toJSON().slice(0,10),
-                    km: document.getElementById('add_pocatecni').value,
-            };
-
             newCar(val, hard);
             break;
     }
@@ -210,11 +179,25 @@ function checkValues(val) {
     var chyba = "";
 
     switch(val.action) {
+        case fill_action_name:
+            if (!val.fill_carname) chyba += "\nChybí: Auto";
+            if (val.fill_kilometru&&val.fill_konecny) chyba += "\nNesmí být zadán konečný a kilometrů zároveň";
+            if (!val.fill_kilometru&&!val.fill_konecny) chyba += "\nChybí: Kilometry";
+        break;
         case tank_action_name:
-            if (!val.l) chyba += "\nNejsou zadané kilometry";
+            if (!val.tank_carname) chyba += "\nChybí: Auto";
+            if (!val.tank_km) chyba += "\nChybí: Kilometry";
+            if (!val.tank_l) chyba += "\nChybí: Litry";
+            if (!val.tank_price) chyba += "\nChybí: Cena";
+        break;
+        case add_action_name:
+            if (!val.add_carname) chyba += "\nChybí: Název auta";
+            if (!val.add_owner) chyba += "\nChybí: Majitel auta";
+            if (!val.add_km) chyba += "\nChybí: Stav tachometru";
         break;
     }
 
+    chyba = chyba.replace(/(?:\r\n|\r|\n)/g, '<br>');
     return chyba;
 }
 
@@ -252,7 +235,7 @@ function checkValues(val) {
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
             <select class="custom-select" id="fill_carname" style="width: 100%; text-align: center;">
-                <option selected>Vyber uživatele</option>
+                <option value="" selected>Vyber uživatele</option>
             </select>
         </div>
 
