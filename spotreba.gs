@@ -1,9 +1,13 @@
 
+var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
+
 var sheetName    = 'Spotřeba';
 var settingsName = 'Settings';
 var templateName = 'Template';
-var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
+
 var tank_action_name = "Tankování";
+var add_action_name = "AddNewCar";
+var fill_action_name = "Zaznamenat";
 
 function doGet(e) {
 
@@ -25,6 +29,8 @@ function doGet(e) {
             +'var webappURL = "' + webappURL + '";'
             +'var sheetsNames = [' + sheetsNames + '];'
             +'var tank_action_name = "' + tank_action_name + '";'
+            +'var add_action_name = "' + add_action_name + '";'
+            +'var fill_action_name = "' + fill_action_name + '";'
         +'</script>';
 
 //  Return html
@@ -34,6 +40,12 @@ function doGet(e) {
 }
 
 function fillIn(val) {
+
+//  Check for correct object action
+    if (val.action != fill_action_name) {
+        notifyUser('Badly set parameter. (fill)', "Error");
+        return false;
+    }
 
 //  Prepare variables
     var _msg =  'Vyplněna jízda\nAuto: ' + val.carname;
@@ -86,8 +98,8 @@ function tankCar(val) {
 
 function registerCar(val) {
 
-    if (val.action != 'addNewCar') {
-        notifyUser('Badly set parameter. (add)');
+    if (val.action != add_action_name) {
+        notifyUser('Badly set parameter. (add)', "Error");
         return false;
     }
 
