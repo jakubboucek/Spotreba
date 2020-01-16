@@ -39,7 +39,17 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(htmlOutput);
 }
 
-function fillIn(val) {
+function submitData(val, hard) {
+    var r = false;
+    switch (val.action) {
+        case fill_action_name: r=fillIn(val, hard);      break;
+        case tank_action_name: r=tankCar(val, hard);     break;
+        case add_action_name:  r=registerCar(val, hard); break;
+    }
+    return r;
+}
+
+function fillIn(val, hard) {
 
 //  Check for correct object action
     if (val.action != fill_action_name) {
@@ -75,7 +85,7 @@ function fillIn(val) {
     return true;
 }
 
-function tankCar(val) {
+function tankCar(val, hard) {
 
     if (val.action != tank_action_name) {
         notifyUser('Badly set parameter. (tank)', "Error");
@@ -96,7 +106,7 @@ function tankCar(val) {
 
 }
 
-function registerCar(val) {
+function registerCar(val, hard) {
 
     if (val.action != add_action_name) {
         notifyUser('Badly set parameter. (add)', "Error");
