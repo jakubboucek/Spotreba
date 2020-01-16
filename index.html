@@ -17,7 +17,7 @@ window.onload = function() {
         var option = document.createElement("option");
         option.value = element;
         document.getElementById('znama_auta').append(option);
-    })
+    });
 
 }
 
@@ -38,8 +38,9 @@ function onSuccess() {
         'trasa_name', 'add_name', 'tank_name', 'trasa_odkud','trasa_pres','trasa_kam','trasa_sofer',
         'tank_sofer', 'tank_km', 'tank_l', 'tank_price', 'tank_note',
         'trasa_poznamka','km_konecny','km_kilometru','add_user','add_owner','add_pocatecni',
-    ]
+    ];
     deleteThese.forEach(element => vymazat(element));
+    document.getElementById("button_nekontrolovat").style.display = "none";
 
 //  Informovat o úspěšném dokončení
     document.getElementById("statusbar").innerHTML = 'Úspěšně odesláno. :)';
@@ -52,10 +53,12 @@ function onFailure() {
     document.getElementById("statusbar").className = 'alert alert-danger';
 }
 
-function submitData(hard=0) { // !TODO: datum registrace auta se nevyplní
+function submitData(hard=0) {
+
+    if (hard==1 && !confirm('Opravdu přeskočit kontrolu?')) {return; }
 
 //  Informovat o odesílání
-    document.getElementById("statusbar").innerHTML="Odesílám, čekej"
+    document.getElementById("statusbar").innerHTML="Odesílám, čekej";
     document.getElementById("statusbar").className = "alert alert-warning";
 
 //  Hodnoty z inputů do proměnné
@@ -92,15 +95,17 @@ function submitData(hard=0) { // !TODO: datum registrace auta se nevyplní
     }
 
 // Zkontrolovat na chyby, vyhodit alert
-    var chyba = checkValues(val);
+    var chyba = checkValues(val, hard);
     if (chyba) {
         document.getElementById("statusbar").innerHTML = chyba;
         document.getElementById("statusbar").className = "alert alert-danger";
+        document.getElementById("button_nekontrolovat").style.display = "block";
         return false;
     }
 
     google.script.run
-        .withSuccessHandler(onSuccess).withFailureHandler(onFailure)
+        .withSuccessHandler(onSuccess)
+        .withFailureHandler(onFailure)
         .submitData(val, hard);
 }
 
@@ -132,6 +137,10 @@ function switchForms(form = fill_action_name) {
         document.getElementById("button_tankovani").className = "btn btn-secondary";
     }
 
+    document.getElementById("statusbar").className = 'alert alert-info';
+    document.getElementById("statusbar").innerHTML = 'Zapiš';
+    document.getElementById("button_nekontrolovat").style.display = 'none';
+
 }
 
 function vymazat(_pole) {
@@ -140,31 +149,33 @@ function vymazat(_pole) {
     }
 }
 
-function checkValues(val, skip=0) { // !TODO: po nezdařené kontrole ukázat tlačítko "přeskočit kontrolu" s confirmem
+function checkValues(val, skip=0) {
 
     var chyba = "";
     if (skip) return chyba;
+    chyba = "Chybí: ";
 
     switch(val.action) {
         case fill_action_name:
-            if (!val.fill_name) chyba += "\nChybí: Auto";
-            if (val.fill_kilometru&&val.fill_konecny) chyba += "\nNesmí být zadán konečný a kilometrů zároveň";
-            if (!val.fill_kilometru&&!val.fill_konecny) chyba += "\nChybí: Kilometry";
+            if (!val.fill_name) chyba += "Auto, ";
+            //if (val.fill_kilometru&&val.fill_konecny) chyba += "\nNesmí být zadán konečný a kilometrů zároveň";
+            if (!val.fill_kilometru&&!val.fill_konecny) chyba += "Kilometry, ";
         break;
         case tank_action_name:
-            if (!val.tank_name) chyba += "\nChybí: Auto";
-            if (!val.tank_km) chyba += "\nChybí: Kilometry";
-            if (!val.tank_l) chyba += "\nChybí: Litry";
-            if (!val.tank_price) chyba += "\nChybí: Cena";
+            if (!val.tank_name) chyba += "Auto, ";
+            if (!val.tank_km) chyba += "Kilometry, ";
+            if (!val.tank_l) chyba += "Litry, ";
+            if (!val.tank_price) chyba += "Cena, ";
         break;
         case add_action_name:
-            if (!val.add_name) chyba += "\nChybí: Název auta";
-            if (!val.add_owner) chyba += "\nChybí: Majitel auta";
-            if (!val.add_km) chyba += "\nChybí: Stav tachometru";
+            if (!val.add_name) chyba += "Název auta, ";
+            if (!val.add_owner) chyba += "Majitel auta, ";
+            if (!val.add_km) chyba += "Stav tachometru, ";
         break;
     }
 
-    chyba = chyba.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    if (chyba == "Chybí: ") chyba = "";
+    chyba = chyba.replace(/, $/g, '');
     return chyba;
 }
 
@@ -191,35 +202,37 @@ function checkValues(val, skip=0) { // !TODO: po nezdařené kontrole ukázat tl
 <datalist id="znama_auta">
 </datalist>
 
-<div style="width: 350px; margin: auto;">
-    <div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš</div>
+<div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš</div>
+
+<div style="width: 400px; margin: auto;">
+
 
     <div class="btn-group" role="group" style="width: 100%">
-        <button type="button" class="btn btn-success" onclick='switchForms(fill_action_name)' id="button_zaznam">Jízda</button>
-        <button type="button" class="btn btn-secondary" onclick='switchForms(tank_action_name)' id="button_tankovani">Tankovat</button>
-        <button type="button" class="btn btn-secondary" onclick='switchForms(add_action_name)' id="button_pridat">Registrace</button>
+        <button type="button" onclick='switchForms(fill_action_name)' id="button_zaznam">Jízda</button>
+        <button type="button" onclick='switchForms(tank_action_name)' id="button_tankovani">Tankovat</button>
+        <button type="button" onclick='switchForms(add_action_name)'  id="button_pridat">Registrace</button>
     </div>
 
     <form id="form_zaznam" style="display: block;">
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <input type="text" class="form-control" id='trasa_name' style="max-width: 250px" list="znama_auta">
+            <input type="text" class="form-control" id='trasa_name' list="znama_auta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Odkud</span></div>
-            <input type="text" class="form-control" id="trasa_odkud" style="max-width: 250px" list="znama_mesta">
+            <input type="text" class="form-control" id="trasa_odkud" list="znama_mesta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Přes</span></div>
-            <input type="text" class="form-control" id="trasa_pres" style="max-width: 250px" list="znama_mesta">
+            <input type="text" class="form-control" id="trasa_pres" list="znama_mesta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kam</span></div>
-            <input type="text" class="form-control" id="trasa_kam" style="max-width: 250px" list="znama_mesta">
+            <input type="text" class="form-control" id="trasa_kam" list="znama_mesta">
         </div>
 
         <div class="input-group">
@@ -231,29 +244,27 @@ function checkValues(val, skip=0) { // !TODO: po nezdařené kontrole ukázat tl
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Šofér</span></div>
-            <input type="text" class="form-control" id="trasa_sofer" style="max-width: 250px" list="uzivatele_aut">
+            <input type="text" class="form-control" id="trasa_sofer" list="uzivatele_aut">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Konečný</span></div>
-            <input type="number" class="form-control" id="km_konecny" style="max-width: 250px">
+            <input type="number" class="form-control" id="km_konecny">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometrů</span></div>
-            <input type="number" class="form-control" id="km_kilometru" style="max-width: 250px">
+            <input type="number" class="form-control" id="km_kilometru">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
-            <textarea rows="1" class="form-control" id="trasa_poznamka" style="max-width: 250px"></textarea>
+            <textarea rows="1" class="form-control" id="trasa_poznamka"></textarea>
         </div>
 
         <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" style="width: 100px">Datum</span>
-            </div>
-            <input type="date" class="form-control" id="trasa_date" style="max-width: 250px; text-align: center;">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Datum</span></div>
+            <input type="date" class="form-control" id="trasa_date" style="text-align: center;">
         </div>
 
     </form>
@@ -262,39 +273,37 @@ function checkValues(val, skip=0) { // !TODO: po nezdařené kontrole ukázat tl
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
-            <input type="text" class="form-control" id="tank_name" style="max-width: 250px" list="znama_auta">
+            <input type="text" class="form-control" id="tank_name" list="znama_auta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Šofér</span></div>
-            <input type="text" class="form-control" id="tank_sofer" style="max-width: 250px" list="uzivatele_aut">
+            <input type="text" class="form-control" id="tank_sofer" list="uzivatele_aut">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
-            <input type="number" class="form-control" id="tank_km" style="max-width: 250px">
+            <input type="number" class="form-control" id="tank_km">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Litry</span></div>
-            <input type="number" class="form-control" id="tank_l" style="max-width: 250px">
+            <input type="number" class="form-control" id="tank_l">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Cena</span></div>
-            <input type="number" class="form-control" id="tank_price" style="max-width: 250px">
+            <input type="number" class="form-control" id="tank_price">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
-            <textarea rows="1" class="form-control" id="tank_note" style="max-width: 250px"></textarea>
+            <textarea rows="1" class="form-control" id="tank_note"></textarea>
         </div>
 
         <div class="input-group">
-            <div class="input-group-prepend">
-                <span class="input-group-text" style="width: 100px">Datum</span>
-            </div>
-            <input type="date" class="form-control" id="tank_date" style="max-width: 250px; text-align: center;">
+            <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Datum</span></div>
+            <input type="date" class="form-control" id="tank_date" style="text-align: center;">
         </div>
 
     </form>
@@ -303,28 +312,29 @@ function checkValues(val, skip=0) { // !TODO: po nezdařené kontrole ukázat tl
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Auto</span></div>
-            <input type="text" class="form-control" id="add_name" style="max-width: 250px" placeholder="Název auta">
+            <input type="text" class="form-control" id="add_name" placeholder="Název auta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Vlastník</span></div>
-            <input type="text" class="form-control" id="add_owner" style="max-width: 250px" placeholder="Majitel auta">
+            <input type="text" class="form-control" id="add_owner" placeholder="Majitel auta">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Uživatel</span></div>
-            <input type="text" class="form-control" id="add_user" style="max-width: 250px" placeholder="Zodpovědná osoba" list="uzivatele_aut">
+            <input type="text" class="form-control" id="add_user" placeholder="Zodpovědná osoba" list="uzivatele_aut">
         </div>
 
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Stav</span></div>
-            <input type="number" class="form-control" id="add_pocatecni" style="max-width: 250px" placeholder="Stav tachometru">
+            <input type="number" class="form-control" id="add_pocatecni" placeholder="Stav tachometru">
         </div>
 
     </form>
 
     <div class="btn-group" role="group" style="width: 100%">
         <button type="button" class="btn btn-primary" onclick='submitData()' >Potvrdit</button>
+        <div class="btn-group"><button type="button" class="btn btn-outline-danger" onclick="submitData(1)" id="button_nekontrolovat" style="display: none;">!</button></div>
     </div>
 
 </div>
