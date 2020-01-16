@@ -63,8 +63,8 @@ function submitData(hard=0) {
 
 //  Hodnoty z inputů do proměnné
     var val = {
-
              action: active_form,
+
     //  Pro záznam jízdy:
           fill_name: document.getElementById('trasa_name').value,
          fill_odkud: document.getElementById('trasa_odkud').value,
@@ -143,9 +143,9 @@ function switchForms(form = fill_action_name) {
 
 }
 
-function vymazat(_pole) {
-    if (document.getElementById(_pole).value) {
-        document.getElementById(_pole).value = '';
+function vymazat(id) {
+    if (document.getElementById(id).value) {
+        document.getElementById(id).value = '';
     }
 }
 
@@ -157,25 +157,25 @@ function checkValues(val, skip=0) {
 
     switch(val.action) {
         case fill_action_name:
-            if (!val.fill_name) chyba += "Auto, ";
+            if (!val.fill_name)  chyba += "Auto, ";
             //if (val.fill_kilometru&&val.fill_konecny) chyba += "\nNesmí být zadán konečný a kilometrů zároveň";
             if (!val.fill_kilometru&&!val.fill_konecny) chyba += "Kilometry, ";
         break;
         case tank_action_name:
-            if (!val.tank_name) chyba += "Auto, ";
-            if (!val.tank_km) chyba += "Kilometry, ";
-            if (!val.tank_l) chyba += "Litry, ";
+            if (!val.tank_name)  chyba += "Auto, ";
+            if (!val.tank_km)    chyba += "Kilometry, ";
+            if (!val.tank_l)     chyba += "Litry, ";
             if (!val.tank_price) chyba += "Cena, ";
         break;
         case add_action_name:
-            if (!val.add_name) chyba += "Název auta, ";
+            if (!val.add_name)  chyba += "Název auta, ";
             if (!val.add_owner) chyba += "Majitel auta, ";
-            if (!val.add_km) chyba += "Stav tachometru, ";
+            if (!val.add_km)    chyba += "Stav tachometru, ";
         break;
     }
 
     if (chyba == "Chybí: ") chyba = "";
-    chyba = chyba.replace(/, $/g, '');
+    chyba = chyba.replace(/, $/g, '!');
     return chyba;
 }
 
@@ -214,122 +214,98 @@ function checkValues(val, skip=0) {
     </div>
 
     <form id="form_zaznam" style="display: block;">
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
             <input type="text" class="form-control" id='trasa_name' list="znama_auta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Odkud</span></div>
             <input type="text" class="form-control" id="trasa_odkud" list="znama_mesta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Přes</span></div>
             <input type="text" class="form-control" id="trasa_pres" list="znama_mesta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kam</span></div>
             <input type="text" class="form-control" id="trasa_kam" list="znama_mesta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Typ</span></div>
             <select class="custom-select" id="trasa_typ" style="width: 100%; text-align: center;">
                 <option value="Osobní">Osobní</option><option value="Služební">Služební</option>
             </select>
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Šofér</span></div>
             <input type="text" class="form-control" id="trasa_sofer" list="uzivatele_aut">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Konečný</span></div>
             <input type="number" class="form-control" id="km_konecny">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometrů</span></div>
             <input type="number" class="form-control" id="km_kilometru">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
             <textarea rows="1" class="form-control" id="trasa_poznamka"></textarea>
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Datum</span></div>
             <input type="date" class="form-control" id="trasa_date" style="text-align: center;">
         </div>
-
     </form>
 
     <form id="form_tankovani" style="display: none;">
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Auto</span></div>
             <input type="text" class="form-control" id="tank_name" list="znama_auta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Šofér</span></div>
             <input type="text" class="form-control" id="tank_sofer" list="uzivatele_aut">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Kilometry</span></div>
             <input type="number" class="form-control" id="tank_km">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Litry</span></div>
             <input type="number" class="form-control" id="tank_l">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Cena</span></div>
             <input type="number" class="form-control" id="tank_price">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Poznámka</span></div>
             <textarea rows="1" class="form-control" id="tank_note"></textarea>
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Datum</span></div>
             <input type="date" class="form-control" id="tank_date" style="text-align: center;">
         </div>
-
     </form>
 
     <form id="form_pridat" style="display: none;">
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Auto</span></div>
             <input type="text" class="form-control" id="add_name" placeholder="Název auta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Vlastník</span></div>
             <input type="text" class="form-control" id="add_owner" placeholder="Majitel auta">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Uživatel</span></div>
             <input type="text" class="form-control" id="add_user" placeholder="Zodpovědná osoba" list="uzivatele_aut">
         </div>
-
         <div class="input-group">
             <div class="input-group-prepend"><span class="input-group-text" style="width: 100px">Stav</span></div>
             <input type="number" class="form-control" id="add_pocatecni" placeholder="Stav tachometru">
         </div>
-
     </form>
 
     <div class="btn-group" role="group" style="width: 100%">
