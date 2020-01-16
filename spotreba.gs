@@ -1,8 +1,13 @@
 
+var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
+
 var sheetName    = 'Spotřeba';
 var settingsName = 'Settings';
 var templateName = 'Template';
-var sheetID = SpreadsheetApp.getActiveSpreadsheet().getId();
+
+var tank_action_name = "Tankování";
+var add_action_name = "AddNewCar";
+var fill_action_name = "Zaznamenat";
 
 function doGet(e) {
 
@@ -13,7 +18,6 @@ function doGet(e) {
     for (var i=0;i<sheets.length;i++) {
         _name = sheets[i].getName();
         if (_name!=settingsName&&_name!=templateName) {
-            _name=encodeURI(_name);
             sheetsNames+='\''+_name+'\',';
         }
     }
@@ -24,6 +28,9 @@ function doGet(e) {
         +'<script>'
             +'var webappURL = "' + webappURL + '";'
             +'var sheetsNames = [' + sheetsNames + '];'
+            +'var tank_action_name = "' + tank_action_name + '";'
+            +'var add_action_name = "' + add_action_name + '";'
+            +'var fill_action_name = "' + fill_action_name + '";'
         +'</script>';
 
 //  Return html
@@ -32,25 +39,40 @@ function doGet(e) {
     return HtmlService.createHtmlOutput(htmlOutput);
 }
 
-function fillIn(val) {
+function submitData(val, hard) {
+    var r = false;
+    switch (val.action) {
+        case fill_action_name: r=fillIn(val, hard);      break;
+        case tank_action_name: r=tankCar(val, hard);     break;
+        case add_action_name:  r=registerCar(val, hard); break;
+    }
+    return r;
+}
+
+function fillIn(val, hard) {
+
+//  Check for correct object action
+    if (val.action != fill_action_name) {
+        notifyUser('Badly set parameter. (fill)', "Error");
+        return false;
+    }
 
 //  Prepare variables
-    var _msg =  'Vyplněna jízda\nAuto: ' + val.carname;
-    var values = [[val.date,val.odkud,val.pres,val.kam,val.type,val.driver,val.note,'=K12']];
+    var _msg =  'Vyplněna jízda\nAuto: ' + val.fill_name;
+    var values = [[val.fill_date,val.fill_odkud,val.fill_pres,val.fill_kam,val.fill_type,val.fill_driver,val.fill_note,'=K12']];
 
 //  Write to table
-    var sh = openSheet(val.carname, false);
+    var sh = openSheet(val.fill_name, false);
     sh.insertRowBefore(11);
     sh.getRange('B11:I11').setValues(values);
-    notifyUser(_msg, 'Success');
 
-    if (!val.kilometru) {
-        sh.getRange('K11').setValue(Number(val.konecny));
+    if (!val.fill_kilometru) {
+        sh.getRange('K11').setValue(Number(val.fill_konecny));
         var value = '=(K11-I11)';
         sh.getRange('J11').setValue(value);
     }
-    else if (!val.konecny) {
-        sh.getRange('J11').setValue(Number(val.kilometru));
+    else if (!val.fill_konecny) {
+        sh.getRange('J11').setValue(Number(val.fill_kilometru));
         var value = '=(I11+J11)';
         sh.getRange('K11').setValue(value);
     } else {
@@ -59,19 +81,20 @@ function fillIn(val) {
     }
 
 //  End call
+    notifyUser(_msg, 'Success');
     return true;
 }
 
-function tankCar(val) {
+function tankCar(val, hard) {
 
-    if (val.action != "tankovani") {
+    if (val.action != tank_action_name) {
         notifyUser('Badly set parameter. (tank)', "Error");
         return false;
     }
 
-    sh = openSheet(val.name, false);
-    var _msg =  'Natankováno\nAuto: ' + val.name;
-    var values = [[val.date,'-','-','-',val.type,val.driver,val.note,'=K12', '=K11-I11', val.km,  val.km, val.price, val.l]];
+    sh = openSheet(val.tank_name, false);
+    var _msg =  'Natankováno\nAuto: ' + val.tank_name;
+    var values = [[val.tank_date,'-','-','-',val.action,val.tank_driver,val.tank_note,'=K12', '=K11-I11', val.tank_km,  val.tank_km, val.tank_price, val.tank_l]];
 
     sh.insertRowBefore(11);
     sh.getRange('B11:N11').setValues(values);
@@ -83,22 +106,21 @@ function tankCar(val) {
 
 }
 
-function registerCar(val) {
+function registerCar(val, hard) {
 
-    if (val.action != 'addNewCar') {
-        notifyUser('Badly set parameter. (add)');
+    if (val.action != add_action_name) {
+        notifyUser('Badly set parameter. (add)', "Error");
         return false;
     }
 
-    var sh = openSheet(val.name, true);
+    var sh = openSheet(val.add_name, true);
     if (!sh) return false;
 
-    sh.getRange('B1').setValue(val.owner);
-    sh.getRange('B2').setValue(val.user);
-    sh.getRange('K11').setValue(val.km);
+    var values = [[val.add_date,'-','-','-','Vytvořeno','-','-','-', '-', val.add_km]];
 
-    var _msg = 'Vytvořeno auto: ' + val.name;
-    notifyUser(_msg, 'Success');
+    sh.getRange('B1').setValue(val.add_owner);
+    sh.getRange('B2').setValue(val.add_user);
+    sh.getRange('B11:K11').setValues(values);
 
 //  End call
     return true;
@@ -195,13 +217,16 @@ function openSheet(_name, _create) {
     //  Get template
         sh = ss.getSheetByName(templateName);
         if (!sh) { //  no template
-        //  Create Template from defaults
-            sh = ss.insertSheet(templateName);
-            loadFromDefault(sh);
+            notifyUser("No template found", "Warning");
+            return ss.insertSheet(_name);
         }
 
     //  Copy template as new sheet and return it
-        sh = sh.copyTo(ss).setName(_name); return sh;
+        sh = sh.copyTo(ss).setName(_name);
+
+        notifyUser(('Vytvořeno auto: ' + _name), 'Success');
+        return sh;
+
     }
 
     notifyUser('Neočekávaná chyba ve funkci "openSheet".', "Warning");
