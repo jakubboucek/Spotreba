@@ -143,25 +143,30 @@ function notifyUser(_msg, _type) {
         console.info(_msg);
     }
 
-//  Prepare data
-    var sh = openSheet(settingsName, false);
-    if (!sh.getRange('C6').getValue) {return; }
+    notifyToTelegram(message);
+}
 
-    var userID = sh.getRange('C3').getValue();
-    var token  = sh.getRange('C4').getValue();
+function notifyToTelegram(message) {
+    var properties = PropertiesService.getScriptProperties();
+    var chatId = properties.getProperty('telegram.chatId');
+    var token = properties.getProperty('telegram.token');
 
-    if(userID === "" || token === "") {
+    if (chatId === null || token === null) {
         // Telegram credentials not defined - do not use it for report
         return;
     }
 
-    var url = ''
-        +'https://api.telegram.org/bot' +token
-        +'/sendMessage?chat_id=' +userID
-        +'&text=' +encodeURI(message);
+    var url = Utilities.formatString('https://api.telegram.org/bot%s/sendMessage', encodeURI(token));
+    var options = {
+        'method': 'post',
+        'payload': {
+            'chat_id': chatId,
+            'text': message
+        }
+    };
 
 //  Send Telegram notification
-    var response = UrlFetchApp.fetch(url);
+    var response = UrlFetchApp.fetch(url, options);
 }
 
 function reloadSettings(sh) {
