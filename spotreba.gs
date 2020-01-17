@@ -15,22 +15,21 @@ function doGet(e) {
     var sheetsNames = '';
     var sheets = SpreadsheetApp.openById(sheetID).getSheets();
 
-    for (var i=0;i<sheets.length;i++) {
-        _name = sheets[i].getName();
-        if (_name!=settingsName&&_name!=templateName) {
-            sheetsNames+='\''+_name+'\',';
-        }
-    }
+    var carSheets = sheets.map(function(sheet){
+        return sheet.getName();
+    }).filter(function(name) {
+        return [settingsName, templateName].indexOf(name) < 0 ;
+    });
 
 //  Pass variables to html
     var webappURL = ScriptApp.getService().getUrl();
     var variables = ''
         +'<script>'
-            +'var webappURL = "' + webappURL + '";'
-            +'var sheetsNames = [' + sheetsNames + '];'
-            +'var tank_action_name = "' + tank_action_name + '";'
-            +'var add_action_name = "' + add_action_name + '";'
-            +'var fill_action_name = "' + fill_action_name + '";'
+            +'var webappURL = ' + JSON.stringify(webappURL) + ';'
+            +'var sheetsNames = ' + JSON.stringify(carSheets) + ';'
+            +'var tank_action_name = ' + JSON.stringify(tank_action_name) + ';'
+            +'var add_action_name = ' + JSON.stringify(add_action_name) + ';'
+            +'var fill_action_name = ' + JSON.stringify(fill_action_name) + ';'
         +'</script>';
 
 //  Return html
