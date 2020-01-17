@@ -12,7 +12,6 @@ var fill_action_name = "Zaznamenat";
 function doGet(e) {
 
 //  Find all sheets except settings and template and make string as array
-    var sheetsNames = '';
     var sheets = SpreadsheetApp.openById(sheetID).getSheets();
 
     var carSheets = sheets.map(function(sheet){
