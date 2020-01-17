@@ -22,19 +22,18 @@ function doGet(e) {
 
 //  Pass variables to html
     var webappURL = ScriptApp.getService().getUrl();
-    var variables = ''
-        +'<script>'
-            +'var webappURL = ' + JSON.stringify(webappURL) + ';'
-            +'var sheetsNames = ' + JSON.stringify(carSheets) + ';'
-            +'var tank_action_name = ' + JSON.stringify(tank_action_name) + ';'
-            +'var add_action_name = ' + JSON.stringify(add_action_name) + ';'
-            +'var fill_action_name = ' + JSON.stringify(fill_action_name) + ';'
-        +'</script>';
-
 //  Return html
     //notifyUser('webApp_loaded\nUser: '+Session.getActiveUser().getEmail(), 'Status');
-    var htmlOutput = variables + HtmlService.createHtmlOutputFromFile('index').getContent();
-    return HtmlService.createHtmlOutput(htmlOutput);
+
+    var template = HtmlService.createTemplateFromFile('index');
+
+    template.webappURL = webappURL;
+    template.carSheets = carSheets;
+    template.tank_action_name = tank_action_name;
+    template.add_action_name = add_action_name;
+    template.fill_action_name = fill_action_name;
+
+    return template.evaluate();
 }
 
 function submitData(val, hard) {
