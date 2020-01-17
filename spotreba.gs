@@ -34,7 +34,7 @@ function doGet(e) {
         +'</script>';
 
 //  Return html
-    notifyUser('webApp_loaded\nUser: '+Session.getActiveUser().getEmail(), 'Status');
+    //notifyUser('webApp_loaded\nUser: '+Session.getActiveUser().getEmail(), 'Status');
     var htmlOutput = variables + HtmlService.createHtmlOutputFromFile('index').getContent();
     return HtmlService.createHtmlOutput(htmlOutput);
 }
@@ -63,6 +63,7 @@ function fillIn(val, hard) {
 
 //  Write to table
     var sh = openSheet(val.fill_name, false);
+    if (!sh) return false;
     sh.getRange('B10:I10').setValues(values);
 
     if (!val.fill_kilometru) {
