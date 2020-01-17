@@ -6,6 +6,13 @@
 
 var active_form = fill_action_name;
 
+var webappURL = <?= webappURL ?>;
+var sheetsNames = <? output.append(JSON.stringify(carSheets)) ?>;
+var tank_action_name = <?= tank_action_name ?>;
+var add_action_name = <?= add_action_name ?>;
+var fill_action_name = <?= fill_action_name ?>;
+
+
 window.onload = function() {
 
     document.getElementById('trasa_date').value = new Date().toJSON().slice(0,10);
