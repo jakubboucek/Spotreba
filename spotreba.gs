@@ -148,6 +148,11 @@ function notifyUser(_msg, _type) {
     var userID = sh.getRange('C3').getValue();
     var token  = sh.getRange('C4').getValue();
 
+    if(userID === "" || token === "") {
+        // Telegram credentials not defined - do not use it for report
+        return;
+    }
+
     var url = ''
         +'https://api.telegram.org/bot' +token
         +'/sendMessage?chat_id=' +userID
