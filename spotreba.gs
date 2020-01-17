@@ -132,6 +132,15 @@ function notifyUser(_msg, _type) {
     var message = _type + ': ' + _msg;
     Logger.log('Message: ' + message);
 
+    // Log events to native Stackdriver logs
+    if(_type === 'Error') {
+        console.error(_msg);
+    } else if(_type === 'Warning') {
+        console.warn(_msg);
+    } else {
+        console.info(_msg);
+    }
+
 //  Prepare data
     var sh = openSheet(settingsName, false);
     if (!sh.getRange('C6').getValue) {return; }
