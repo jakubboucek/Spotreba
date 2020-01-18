@@ -5,6 +5,7 @@
 <script>
 
 var active_form = fill_action_name;
+var isSending = false;
 
 var webappURL = <?= webappURL ?>;
 var sheetsNames = <? output.append(JSON.stringify(carSheets)) ?>;
@@ -53,17 +54,22 @@ function onSuccess(result) {
 //  Informovat o úspěšném dokončení
     document.getElementById("statusbar").innerHTML = 'Úspěšně odesláno. :)';
     document.getElementById("statusbar").className = 'alert alert-success';
+
+    isSending = false;
 }
 
 function onFailure() {
 //  Informovat o neúspěšném dokončení
     document.getElementById("statusbar").innerHTML='Chyba! Něco se pokazilo :(';
     document.getElementById("statusbar").className = 'alert alert-danger';
+
+    isSending = false;
 }
 
 function submitData(hard=0) {
 
     if (hard==1 && !confirm('Opravdu přeskočit kontrolu?')) {return; }
+    if (isSending) {return; } isSending = true;
 
 //  Informovat o odesílání
     document.getElementById("statusbar").innerHTML="Odesílám, čekej";
@@ -108,6 +114,7 @@ function submitData(hard=0) {
         document.getElementById("statusbar").innerHTML = chyba;
         document.getElementById("statusbar").className = "alert alert-danger";
         document.getElementById("button_nekontrolovat").style.display = "block";
+        isSending = false;
         return false;
     }
 
