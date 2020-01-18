@@ -170,7 +170,7 @@ function reloadSettings(sh) {
 
 //  Prepare variables
     if (!sh) {
-        notifyUser('Nepovedlo se vytvořit sheet s Nastavením.', 'Error');
+        notifyUser('Nepovedlo se vytvořit sheet s Nastavením', 'Error');
         return false;
     }
 
@@ -186,7 +186,7 @@ function reloadSettings(sh) {
 
 //  Vrite to sheet
     sh.getRange('A1:B6').setValues(values);
-    notifyUser('Sheet '+sheetName+' byl vytvořen podle šablony.', 'Success');
+    notifyUser('Sheet '+sheetName+' byl vytvořen podle šablony', 'Success');
 }
 
 function loadFromDefault(sh) {
@@ -212,7 +212,7 @@ function openSheet(_name, _create) {
 
 //  Sheet found
     if (sh) {
-        if (_create) {notifyUser('Sheet '+_name+' již existuje.', 'Error'); return false; }
+        if (_create) {notifyUser('Sheet '+_name+' již existuje', 'Error'); return false; }
         else {return sh; }
     }
 
@@ -228,7 +228,7 @@ function openSheet(_name, _create) {
 
     //  Check for rights for creating new file
         if (!_create) {
-            notifyUser('Nemám pravomoci vytvořit sheet: ' + _name + '.', 'Error');
+            notifyUser('Nemám pravomoci vytvořit sheet: ' + _name, 'Error');
             return false;
         }
 
@@ -247,6 +247,6 @@ function openSheet(_name, _create) {
 
     }
 
-    notifyUser('Neočekávaná chyba ve funkci "openSheet".', "Warning");
+    notifyUser('Neočekávaná chyba ve funkci "openSheet"', "Warning");
     return sh;
 }
