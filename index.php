@@ -1,5 +1,7 @@
 <?php
 
+namespace App;
+
 use Tracy\Debugger;
 use Tracy\ILogger;
 use App\Storage\Storage;
@@ -26,8 +28,9 @@ switch ($requestPath) {
 }
 
 
-if(Helpers::isFormSent('form-create')) echo("ljakdshfůalksdjf");
+if(Helpers::isFormSent('form-create')){
 
+}
 
 ?>
 
