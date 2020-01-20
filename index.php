@@ -19,7 +19,7 @@ use App\Validator\ValidateException;
 
     $basePath = rtrim(\dirname($_SERVER['SCRIPT_NAME']),'/');
     $requestPath = substr($_SERVER['REQUEST_URI'], \strlen($basePath));
-    $storage = new Storage(__DIR__ . '/../output');
+    $storage = new Storage(__DIR__ . '/output');
 
 
 $page = '404';
@@ -51,7 +51,7 @@ if(Helpers::isFormSent('form-create')){ // odesláno
             new Content\Km(Helpers::getFormValue('km_stav')),
         );
 
-        // $storage->save($user->getCarname());
+        $storage->createCar($car->getId(), $car->toArray());
 
     } catch (ValidateException $e) {
         $error = $e->getMessage();
@@ -60,12 +60,6 @@ if(Helpers::isFormSent('form-create')){ // odesláno
         $error = 'Omlouváme se, něco se pokazilo, zkuste to znovu později nebo nás kontaktujte na support@service.cz';
     }
 
-
-    if($car instanceOf Car) {
-        echo("\nsuccessfully created instance Car!");
-    } else {
-        echo($error);
-    }
 
 }
 

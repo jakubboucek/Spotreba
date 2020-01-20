@@ -16,7 +16,7 @@ class Storage
         $this->path = $path;
     }
 
-    public function save($name, $data, $filePath = null)
+    public function createCar($name, $data, $filePath = null)
     {
         $dataToWrite = Json::encode($data, Json::PRETTY);
 
@@ -27,7 +27,7 @@ class Storage
         $isFileSaved = @file_put_contents($filePath, $dataToWrite);
 
         if ($isFileSaved === false) {
-            throw new StorageException('Unable to save file ' . $filePath);
+            throw new StorageException('Unable to save file ' . $filePath . $isFileSaved);
         }
     }
 
@@ -52,15 +52,17 @@ class Storage
     public function changeInfo($key, $values)
     {
 
-        $file = $this->getByKey($key);
+        // $file = $this->getByKey($key);
 
-        $file['name'] = $values['name'];
-        $file['username'] = $values['username'];
-        $file['phone'] = $values['phone'];
-        $file['email'] = $values['email'];
+        // $file['name'] = $values['name'];
+        // $file['username'] = $values['username'];
+        // $file['phone'] = $values['phone'];
+        // $file['email'] = $values['email'];
 
-        $filePath = $this->path . '/' . $key;
-        $this->save('aby se nereklo', $file, $filePath);
+        // $filePath = $this->path . '/' . $key;
+        // $this->save('aby se nereklo', $file, $filePath);
+        throw new StorageException("Není hotovo");
+
     }
 
     public function findKeys()
