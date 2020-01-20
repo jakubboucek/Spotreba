@@ -22,7 +22,10 @@ use App\Validator\ValidateException;
     $storage = new Storage(__DIR__ . '/output');
 
 
+$error = null;
+$car = null;
 $page = '404';
+
 switch ($requestPath) {
     case "/add" :    $page = 'add'; break;
     case "/tank" :   $page = 'tank'; break;
@@ -39,9 +42,6 @@ if(Helpers::isFormSent('form-tank')){ // odesláno
 }
 if(Helpers::isFormSent('form-create')){ // odesláno
 
-    $error = null;
-    $car = null;
-
     try {
 
         $car = new Car(
@@ -57,7 +57,7 @@ if(Helpers::isFormSent('form-create')){ // odesláno
         $error = $e->getMessage();
     } catch (\Exception $e) {
         Debugger::log($e, ILogger::ERROR);
-        $error = 'Omlouváme se, něco se pokazilo, zkuste to znovu později nebo nás kontaktujte na support@service.cz';
+        $error = 'Omlouvám se, něco se pokazilo, zkus to znovu.';
     }
 
 
@@ -82,6 +82,7 @@ if(Helpers::isFormSent('form-create')){ // odesláno
         case 'create': include("forms/create.php"); break;
         case 'show': include("page/show.php"); break;
         case 'welcome': include("forms/welcome.php"); break;
+        case 'change': include("forms/change.php"); break;
         default: include("page/404.php"); break;
     }
 
