@@ -2,9 +2,12 @@
 
 namespace App;
 
+use App\Content;
 use Tracy\Debugger;
 use Tracy\ILogger;
 use App\Storage\Storage;
+use App\Validator\Validate;
+use App\Validator\ValidateException;
 
 // ===== Autoloader knihoven a start Laděnky ====
     require __DIR__ . '/vendor/autoload.php';
@@ -16,6 +19,7 @@ use App\Storage\Storage;
 
     $basePath = rtrim(\dirname($_SERVER['SCRIPT_NAME']),'/');
     $requestPath = substr($_SERVER['REQUEST_URI'], \strlen($basePath));
+    $storage = new Storage(__DIR__ . '/../output');
 
 
 $page = '404';
@@ -23,7 +27,7 @@ switch ($requestPath) {
     case "/add" :    $page = 'add'; break;
     case "/tank" :   $page = 'tank'; break;
     case "/create" : $page = 'create'; break;
-    case "/show" : $page = 'show'; break;
+    case "/show" :   $page = 'show'; break;
     case "/" :       $page = 'welcome'; break;
     case preg_match('/change\/.*/i', $requestPath) || preg_match('/change$/i', $requestPath) : $page = 'change'; break;
 }
@@ -35,14 +39,34 @@ if(Helpers::isFormSent('form-tank')){ // odesláno
 }
 if(Helpers::isFormSent('form-create')){ // odesláno
 
-    $carname = Helpers::getFormValue('carname');
-    $owner = Helpers::getFormValue('owner');
-    $user = Helpers::getFormValue('user');
-    $km_stav = Helpers::getFormValue('km_stav');
+    $error = null;
+    $car = null;
 
-    $car = new Car($carname, $owner, $user, $km_stav);
+    try {
 
-    echo($car->toArray()['carname']);
+        $car = new Car(
+            new Content\Carname(Helpers::getFormValue('carname')),
+            new Content\Name(Helpers::getFormValue('owner')),
+            new Content\Name(Helpers::getFormValue('driver')),
+            new Content\Km(Helpers::getFormValue('km_stav')),
+        );
+
+        // $storage->save($user->getCarname());
+
+    } catch (ValidateException $e) {
+        $error = $e->getMessage();
+    } catch (\Exception $e) {
+        Debugger::log($e, ILogger::ERROR);
+        $error = 'Omlouváme se, něco se pokazilo, zkuste to znovu později nebo nás kontaktujte na support@service.cz';
+    }
+
+
+    if($car instanceOf Car) {
+        echo("\nsuccessfully created instance Car!");
+    } else {
+        echo($error);
+    }
+
 }
 
 ?>
