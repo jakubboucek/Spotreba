@@ -34,7 +34,7 @@
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Stav</span></div>
-		<input type="number" name="km-stav" class="form-control">
+		<input type="number" name="km_stav" class="form-control">
 		<div class="input-group-append"><span class="input-group-text">Kilometrů</span></div>
 	</div>
 
@@ -51,5 +51,5 @@
 	</div>
 
 	<input type="hidden" name="action" value="form-add">
-	<input type="submit" name="submit" value="Přidat auto" class="btn btn-primary" style="width: 100%;">
+	<input type="submit" name="submit" value="Zaznamenat" class="btn btn-primary" style="width: 100%;">
 </form>

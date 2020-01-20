@@ -18,7 +18,7 @@
 
 	<div class="input-group">
 		<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Stav</span></div>
-		<input type="number" name="km-stav" class="form-control">
+		<input type="number" name="km_stav" class="form-control">
 		<div class="input-group-append"><span class="input-group-text">Kilometrů</span></div>
 	</div>
 

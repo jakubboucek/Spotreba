@@ -23,13 +23,26 @@ switch ($requestPath) {
     case "/add" :    $page = 'add'; break;
     case "/tank" :   $page = 'tank'; break;
     case "/create" : $page = 'create'; break;
+    case "/show" : $page = 'show'; break;
     case "/" :       $page = 'welcome'; break;
     case preg_match('/change\/.*/i', $requestPath) || preg_match('/change$/i', $requestPath) : $page = 'change'; break;
 }
 
 
-if(Helpers::isFormSent('form-create')){
+if(Helpers::isFormSent('form-add')){ // odesláno
+}
+if(Helpers::isFormSent('form-tank')){ // odesláno
+}
+if(Helpers::isFormSent('form-create')){ // odesláno
 
+    $carname = Helpers::getFormValue('carname');
+    $owner = Helpers::getFormValue('owner');
+    $user = Helpers::getFormValue('user');
+    $km_stav = Helpers::getFormValue('km_stav');
+
+    $car = new Car($carname, $owner, $user, $km_stav);
+
+    echo($car->toArray()['carname']);
 }
 
 ?>
@@ -40,8 +53,8 @@ if(Helpers::isFormSent('form-create')){
 
 <?php include("page/datalists.php"); ?>
 
+<?php include("page/navbar.php"); ?>
 <?php include("page/statusbar.php"); ?>
-<?php include("page/buttons.php"); ?>
 
 <?php
 
@@ -49,6 +62,7 @@ if(Helpers::isFormSent('form-create')){
         case 'add': include("forms/add.php"); break;
         case 'tank': include("forms/tank.php"); break;
         case 'create': include("forms/create.php"); break;
+        case 'show': include("page/show.php"); break;
         case 'welcome': include("forms/welcome.php"); break;
         default: include("page/404.php"); break;
     }
