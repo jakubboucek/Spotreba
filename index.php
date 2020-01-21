@@ -41,9 +41,56 @@ if(Helpers::isFormSent('form-add')){ // odesláno
 if(Helpers::isFormSent('form-tank')){ // odesláno
 }
 if(Helpers::isFormSent('form-change')){ // odesláno
+
+    $carname = preg_replace('/.*?change\//i', "", $requestPath);
+    $carKey = null;
+    $e = null;
+
+    foreach ($storage->findKeys() as $key) {
+        $data = $storage->getByKey($key);
+        if (isset($data['carId']) && $data['carId'] == $carname) {
+            $carKey = $key;
+        }
+    }
+
+    $data = $storage->getByKey($key);
+    if ($data !== null) {
+
+
+        try {
+            $carWasChanged = false;
+            $testCar = new Car(
+                new Content\Carname(Helpers::getFormValue('carname')),
+                new Content\Name(Helpers::getFormValue('owner')),
+                new Content\Name(Helpers::getFormValue('driver')),
+                new Content\Km(Helpers::getFormValue('km_stav')),
+            ); // test if new values are okay
+
+            $data = [];
+            $data['carname'] = Helpers::getFormValue('carname');
+            $data['owner'] = Helpers::getFormValue('owner');
+            $data['driver'] = Helpers::getFormValue('driver');
+            $data['km_stav'] = Helpers::getFormValue('km_stav');
+            $data['carId'] = Helpers::getFormValue('carId');
+
+            $storage->changeCar($carKey, $data);
+            $carWasChanged = true;
+
+        } catch (ValidateException $e) {
+            $error = $e->getMessage();
+        } catch (\Exception $e) {
+            Debugger::log($e, ILogger::ERROR);
+            $error = 'Omlouváme se, něco se pokazilo, zkuste to znovu později nebo nás kontaktujte na support@service.cz';
+        }
+    }
+
+
+
 }
 if(Helpers::isFormSent('form-create')){ // odesláno
 
+
+    $e = null;
     try {
 
         $car = new Car(
@@ -61,8 +108,6 @@ if(Helpers::isFormSent('form-create')){ // odesláno
         Debugger::log($e, ILogger::ERROR);
         $error = 'Omlouvám se, něco se pokazilo, zkus to znovu.';
     }
-
-
 }
 
 ?>
@@ -83,7 +128,7 @@ if(Helpers::isFormSent('form-create')){ // odesláno
         case 'tank': include("forms/tank.php"); break;
         case 'create': include("forms/create.php"); break;
         case 'show': include("page/show.php"); break;
-        case 'welcome': include("forms/welcome.php"); break;
+        case 'welcome': include("page/welcome.php"); break;
         case 'change': include("forms/change.php"); break;
         default: include("page/404.php"); break;
     }

@@ -21,7 +21,8 @@ class Storage
         $dataToWrite = Json::encode($data, Json::PRETTY);
 
         if (!isset($filePath)) {
-            $filePath = $this->getNewFilePath($name);
+            $rnd = $data['carId'];
+            $filePath = $this->getNewFilePath($name, $rnd);
         }
 
         $isFileSaved = @file_put_contents($filePath, $dataToWrite);
@@ -31,13 +32,12 @@ class Storage
         }
     }
 
-    private function getNewFilePath($name)
+    private function getNewFilePath($name, $random)
     {
         $outputFolder = $this->path;
 
         $date = date('Y-m-d-H-i-s');
         $name = $this->sanitizeName($name);
-        $random = Random::generate(4);
 
         return "$outputFolder/$date-$name-$random.json";
     }
@@ -49,19 +49,18 @@ class Storage
         return $name;
     }
 
-    public function changeInfo($key, $values)
+    public function changeCar($key, $values)
     {
 
-        // $file = $this->getByKey($key);
+        $file = $this->getByKey($key);
 
-        // $file['name'] = $values['name'];
-        // $file['username'] = $values['username'];
-        // $file['phone'] = $values['phone'];
-        // $file['email'] = $values['email'];
+        $file['carname'] = $values['carname'];
+        $file['owner'] = $values['owner'];
+        $file['driver'] = $values['driver'];
+        $file['km_stav'] = $values['km_stav'];
 
-        // $filePath = $this->path . '/' . $key;
-        // $this->save('aby se nereklo', $file, $filePath);
-        throw new StorageException("Není hotovo");
+        $filePath = $this->path . '/' . $key;
+        $this->createCar('nic', $file, $filePath);
 
     }
 
