@@ -40,6 +40,8 @@ if(Helpers::isFormSent('form-add')){ // odesláno
 }
 if(Helpers::isFormSent('form-tank')){ // odesláno
 }
+if(Helpers::isFormSent('form-change')){ // odesláno
+}
 if(Helpers::isFormSent('form-create')){ // odesláno
 
     try {
