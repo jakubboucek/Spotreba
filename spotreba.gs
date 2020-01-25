@@ -8,8 +8,56 @@ var templateName = 'Template';
 var tank_action_name = "Tankování";
 var add_action_name = "AddNewCar";
 var fill_action_name = "Zaznamenat";
+var show_action_name = "ShowCars";
 
 function doGet(e) {
+
+    //  If anything is posted
+    if(e) {
+
+        var data = false;
+
+        if(e.parameters.action == fill_action_name){
+            if(!e.parameter.fill_name){data = {"type": "fail", "message": "Google: Chybí název auta"};}
+            // if(!e.parameter.fill_odkud){data = {"type": "fail", "message": "Google: message"};}
+            // if(!e.parameter.fill_pres){data = {"type": "fail", "message": "Google: message"};}
+            // if(!e.parameter.fill_kam){data = {"type": "fail", "message": "Google: message"};}
+            // if(!e.parameter.fill_driver){data = {"type": "fail", "message": "Google: message"};}
+            if(!e.parameter.fill_konecny&&!e.parameter.fill_kilometru){data = {"type": "fail", "message": "Google: Chybí kilometry"};}
+            if(e.parameter.fill_konecny&&e.parameter.fill_kilometru){data = {"type": "fail", "message": "Google: Je vyplněný stav i ujeto zároveň"};}
+            // if(!e.parameter.fill_note){data = {"type": "fail", "message": "Google: message"};}
+            if(!e.parameter.fill_type){data = {"type": "fail", "message": "Google: Chybí typ cesty"};}
+        }
+        else if(e.parameters.action == tank_action_name){
+            if(!e.parameter.action){data = {"type": "fail", "message": "Google: Chybí akce"};}
+            if(!e.parameter.tank_name){data = {"type": "fail", "message": "Google: Chybí jméno auta"};}
+            // if(!e.parameter.tank_driver){data = {"type": "fail", "message": "Google: Chybí šofér"};}
+            // if(!e.parameter.tank_price){data = {"type": "fail", "message": "Google: Chybí cena"};}
+            if(!e.parameter.tank_l){data = {"type": "fail", "message": "Google: Chybí litry"};}
+            if(!e.parameter.tank_km){data = {"type": "fail", "message": "Google: Chybí kilometry"};}
+            // if(!e.parameter.tank_note){data = {"type": "fail", "message": "Google: Chybí poznámka"};}
+        }
+        else if(e.parameters.action == add_action_name){
+            if(!e.parameter.add_name){data = {"type": "fail", "message": "Google: Chybí jméno auta"};}
+            if(!e.parameter.add_km){data = {"type": "fail", "message": "Google: Chybí stav km"};}
+            // if(!e.parameter.add_owner){data = {"type": "fail", "message": "Google: Chybí majitel auta"};}
+            // if(!e.parameter.add_user){data = {"type": "fail", "message": "Google: Chybí šofér"};}
+        }
+
+        if (!data && submitData(e.parameters)) {
+            if(e.parameters.action == fill_action_name){data = {"type": "success", "message": "Google: Zaznamenáno"};}
+            else if(e.parameters.action == tank_action_name){data = {"type": "success", "message": "Google: Natankováno"};}
+            else if(e.parameters.action == add_action_name){data = {"type": "success", "message": "Google: Zaregistrováno"};}
+            notifyUser(e, "Success");
+        }
+        else {
+            if (!data) {data = {"type": "fail", "message": "Google: Něco se nepovedlo"};}
+            notifyUser(e, "Error");
+        }
+
+        var json = ContentService.createTextOutput(JSON.stringify(data));
+        return json;
+    }
 
 //  Find all sheets except settings and template and make string as array
     var sheets = SpreadsheetApp.openById(sheetID).getSheets();
@@ -37,12 +85,14 @@ function doGet(e) {
 }
 
 function submitData(val, hard) {
+
     var r = false;
-    switch (val.action) {
-        case fill_action_name: r=fillIn(val, hard);      break;
-        case tank_action_name: r=tankCar(val, hard);     break;
-        case add_action_name:  r=registerCar(val, hard); break;
-    }
+
+    if(val.action == fill_action_name){r=fillIn(val, hard); }
+    else if(val.action == tank_action_name){r=tankCar(val, hard); }
+    else if(val.action == add_action_name){r=registerCar(val, hard); }
+    else {notifyUser("submitData reached end. Bad action!", "Warning"); }
+
     return r;
 }
 
@@ -62,6 +112,9 @@ function fillIn(val, hard) {
     var sh = openSheet(val.fill_name, false);
     if (!sh) return false;
     sh.getRange('B10:I10').setValues(values);
+
+    if (val.fill_kilometru=="")val.fill_kilometru = false;
+    if (val.fill_konecny=="")val.fill_konecny = false;
 
     if (!val.fill_kilometru) {
         sh.getRange('K10').setValue(Number(val.fill_konecny));
@@ -92,6 +145,7 @@ function tankCar(val, hard) {
     }
 
     sh = openSheet(val.tank_name, false);
+    if(!sh) {return false; }
     var _msg =  'Natankováno\nAuto: ' + val.tank_name;
     var values = [[val.tank_date,'-','-','-',val.action,val.tank_driver,val.tank_note,'=K11', '=K10-I10', val.tank_km,  val.tank_km, val.tank_price, val.tank_l]];
 

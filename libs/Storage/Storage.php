@@ -64,6 +64,26 @@ class Storage
 
     }
 
+    public function newDrive($key, $values)
+    {
+
+        $file = $this->getByKey($key);
+
+        $file['driveID'] = $values['driveId'];
+        $file['odkud'] = $values['odkud'];
+        $file['pres'] = $values['pres'];
+        $file['kam'] = $values['kam'];
+        $file['driver'] = $values['driver'];
+        $file[''] = $values[''];
+        $file[''] = $values[''];
+        $file[''] = $values[''];
+        $file[''] = $values[''];
+
+        $filePath = $this->path . '/' . $key;
+        $this->createCar('nic', $file, $filePath);
+
+    }
+
     public function findKeys()
     {
 

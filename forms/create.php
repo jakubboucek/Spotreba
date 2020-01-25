@@ -2,7 +2,7 @@
 	namespace App;
 ?>
 
-<?php if($car instanceof Car): ?>
+<?php if($car instanceof Car && isset($google) && $google->type=="success"): ?>
 
 <div style="width: 400px; margin: auto;">
 	<table class="table table-bordered">

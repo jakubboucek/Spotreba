@@ -6,8 +6,10 @@ use App\Content;
 use Tracy\Debugger;
 use Tracy\ILogger;
 use App\Storage\Storage;
+use App\Uploader\Uploader;
 use App\Validator\Validate;
 use App\Validator\ValidateException;
+use App\Uploader\UploaderException;
 
 // ===== Autoloader knihoven a start Laděnky ====
     require __DIR__ . '/vendor/autoload.php';
@@ -17,13 +19,16 @@ use App\Validator\ValidateException;
 
 // ===== Inicializace ===========================
 
+    $googleScriptUrl = 'APP_SCRIPT_URL';
     $basePath = rtrim(\dirname($_SERVER['SCRIPT_NAME']),'/');
     $requestPath = substr($_SERVER['REQUEST_URI'], \strlen($basePath));
     $storage = new Storage(__DIR__ . '/output');
+    $uploader = new Uploader($googleScriptUrl);
 
 
 $error = null;
 $car = null;
+$google = null;
 $page = '404';
 
 switch ($requestPath) {
@@ -37,60 +42,40 @@ switch ($requestPath) {
 
 
 if(Helpers::isFormSent('form-add')){ // odesláno
+
+    $addArray = [
+        'carname' => Helpers::getFormValue('carname'),
+        'odkud' => Helpers::getFormValue('odkud'),
+        'pres' => Helpers::getFormValue('pres'),
+        'kam' => Helpers::getFormValue('kam'),
+        'driver' => Helpers::getFormValue('driver'),
+        'km-ujeto' => Helpers::getFormValue('km-ujeto'),
+        'km_stav' => Helpers::getFormValue('km_stav'),
+        'note' => Helpers::getFormValue('note'),
+        'type' => Helpers::getFormValue('type'),
+    ];
+
+    $google = $uploader->createFill($addArray);
 }
 if(Helpers::isFormSent('form-tank')){ // odesláno
-}
-if(Helpers::isFormSent('form-change')){ // odesláno
 
-    $carname = preg_replace('/.*?change\//i', "", $requestPath);
-    $carKey = null;
-    $e = null;
+    $tankArray = [
+        'carname' => Helpers::getFormValue('carname'),
+        'driver' => Helpers::getFormValue('driver'),
+        'price' => Helpers::getFormValue('price'),
+        'liters' => Helpers::getFormValue('liters'),
+        'km_stav' => Helpers::getFormValue('km_stav'),
+        'note' => Helpers::getFormValue('note')
+    ];
 
-    foreach ($storage->findKeys() as $key) {
-        $data = $storage->getByKey($key);
-        if (isset($data['carId']) && $data['carId'] == $carname) {
-            $carKey = $key;
-        }
-    }
-
-    $data = $storage->getByKey($key);
-    if ($data !== null) {
-
-
-        try {
-            $carWasChanged = false;
-            $testCar = new Car(
-                new Content\Carname(Helpers::getFormValue('carname')),
-                new Content\Name(Helpers::getFormValue('owner')),
-                new Content\Name(Helpers::getFormValue('driver')),
-                new Content\Km(Helpers::getFormValue('km_stav')),
-            ); // test if new values are okay
-
-            $data = [];
-            $data['carname'] = Helpers::getFormValue('carname');
-            $data['owner'] = Helpers::getFormValue('owner');
-            $data['driver'] = Helpers::getFormValue('driver');
-            $data['km_stav'] = Helpers::getFormValue('km_stav');
-            $data['carId'] = Helpers::getFormValue('carId');
-
-            $storage->changeCar($carKey, $data);
-            $carWasChanged = true;
-
-        } catch (ValidateException $e) {
-            $error = $e->getMessage();
-        } catch (\Exception $e) {
-            Debugger::log($e, ILogger::ERROR);
-            $error = 'Omlouváme se, něco se pokazilo, zkuste to znovu později nebo nás kontaktujte na support@service.cz';
-        }
-    }
-
-
+    $google = $uploader->createTank($tankArray);
 
 }
 if(Helpers::isFormSent('form-create')){ // odesláno
 
 
     $e = null;
+    $googleResponse = null;
     try {
 
         $car = new Car(
@@ -100,9 +85,11 @@ if(Helpers::isFormSent('form-create')){ // odesláno
             new Content\Km(Helpers::getFormValue('km_stav')),
         );
 
-        $storage->createCar($car->getId(), $car->toArray());
+        $google = $uploader->createCar($car->toArray());
 
     } catch (ValidateException $e) {
+        $error = $e->getMessage();
+    } catch (UploaderException $e) {
         $error = $e->getMessage();
     } catch (\Exception $e) {
         Debugger::log($e, ILogger::ERROR);
