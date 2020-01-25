@@ -86,7 +86,7 @@ class Uploader
     {
 
         $googleURL = $this->url
-            .'?action='.urlencode('Zaznamenat')
+            .'?action='.urlencode('ShowData')
         ;
 
         $response = file_get_contents($googleURL);
@@ -94,7 +94,7 @@ class Uploader
         return $response;
 
         if (!$isFileSaved) {
-            throw new UploaderException('Unable to contact google!');
+            throw new UploaderException('Unable to optatin data!');
         }
     }
 

@@ -23,44 +23,44 @@
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Název auta</span></div>
-		<input type="text" name="carname" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('carname')); ?>" list="known_carnames">
+		<input type="text" name="carname" class="form-control" value="<?php echo Helpers::getFormValue('carname'); ?>" list="known_carnames">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Odkud</span></div>
-		<input type="text" name="odkud" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('odkud')); ?>" list="known_cities">
+		<input type="text" name="odkud" class="form-control" value="<?php echo Helpers::getFormValue('odkud'); ?>" list="known_cities">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Přes</span></div>
-		<input type="text" name="pres" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('pres')); ?>" list="known_cities">
+		<input type="text" name="pres" class="form-control" value="<?php echo Helpers::getFormValue('pres'); ?>" list="known_cities">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Kam</span></div>
-		<input type="text" name="kam" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('kam')); ?>" list="known_cities">
+		<input type="text" name="kam" class="form-control" value="<?php echo Helpers::getFormValue('kam'); ?>" list="known_cities">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Šofér</span></div>
-		<input type="text" name="driver" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('driver')); ?>" list="known_drivers">
+		<input type="text" name="driver" class="form-control" value="<?php echo Helpers::getFormValue('driver'); ?>" list="known_drivers">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Ujeto</span></div>
-		<input type="text" name="km-ujeto" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('km-ujeto')); ?>">
+		<input type="text" name="km-ujeto" class="form-control" value="<?php echo Helpers::getFormValue('km-ujeto'); ?>">
 		<div class="input-group-append"><span class="input-group-text">Kilometrů</span></div>
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Stav</span></div>
-		<input type="number" name="km_stav" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('km_stav')); ?>">
+		<input type="number" name="km_stav" class="form-control" value="<?php echo Helpers::getFormValue('km_stav'); ?>">
 		<div class="input-group-append"><span class="input-group-text">Kilometrů</span></div>
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Poznámka</span></div>
-		<textarea type="text" name="note" class="form-control" rows="1"><?php echo Escape::html(Helpers::getFormValue('note')); ?></textarea>
+		<textarea type="text" name="note" class="form-control" rows="1"><?php echo Helpers::getFormValue('note'); ?></textarea>
 	</div>
 
 	<div class="input-group">

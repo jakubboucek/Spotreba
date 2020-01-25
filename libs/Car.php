@@ -29,11 +29,11 @@ class Car
     public function toArray() {
 
         $array = [
-            'carname' => (string)Escape::html($this->carname),
-            'owner' => (string)Escape::html($this->owner),
-            'driver' => (string)Escape::html($this->driver),
-            'km_stav' => (string)Escape::html($this->km_stav),
-            'carId' => (string)Escape::html($this->carId),
+            'carname' => (string)$this->carname,
+            'owner' => (string)$this->owner,
+            'driver' => (string)$this->driver,
+            'km_stav' => (string)$this->km_stav,
+            'carId' => (string)$this->carId,
         ];
 
         return $array;

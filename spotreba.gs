@@ -8,7 +8,7 @@ var settingsDrivers = "F2:F";
 var settingsCities = "G2:G";
 
 var tank_action_name = "Tankování";
-var add_action_name = "AddNewCar";
+var create_action_name = "AddNewCar";
 var fill_action_name = "Zaznamenat";
 var show_action_name = "ShowData";
 
@@ -21,7 +21,7 @@ function doGet(e) {
     if (e.parameters.action == fill_action_name) {
         if (!e.parameter.fill_name)      {data = {"type": "fail", "message": "Google: Chybí název auta" }; }
         else if (!e.parameter.fill_konecny && !e.parameter.fill_kilometru) {data = {"type": "fail", "message": "Google: Chybí kilometry" }; }
-        else if (e.parameter.fill_konecny && e.parameter.fill_kilometru)   {data = {"type": "fail", "message": "Google: Je vyplněný stav i ujeto zároveň" }; }
+        else if ( e.parameter.fill_konecny &&  e.parameter.fill_kilometru) {data = {"type": "fail", "message": "Google: Je vyplněný stav i ujeto zároveň" }; }
         else if (!e.parameter.fill_type) {data = {"type": "fail", "message": "Google: Chybí typ cesty" }; }
     }
     else if (e.parameters.action == tank_action_name) {
@@ -29,21 +29,19 @@ function doGet(e) {
         else if (!e.parameter.tank_km) {data = {"type": "fail", "message": "Google: Chybí kilometry" }; }
         else if (!e.parameter.tank_l)  {data = {"type": "fail", "message": "Google: Chybí litry" }; }
     }
-    else if (e.parameters.action == add_action_name) {
+    else if (e.parameters.action == create_action_name) {
         if (!e.parameter.add_name)    {data = {"type": "fail", "message": "Google: Chybí jméno auta" }; }
         else if (!e.parameter.add_km) {data = {"type": "fail", "message": "Google: Chybí stav km" }; }
     }
     else if (e.parameters.action == show_action_name) {
-        data = ShowData();
-        data.parameters.action = show_action_name;
-        return ContentService.createTextOutput(JSON.stringify(data));
-
+        return ContentService.createTextOutput(JSON.stringify(showData()));
     }
 
     if (!data && submitData(e.parameters)) {
-        if (e.parameters.action == fill_action_name)      {data = {"type": "success", "message": "Google: Zaznamenáno" }; }
-        else if (e.parameters.action == tank_action_name) {data = {"type": "success", "message": "Google: Natankováno" }; }
-        else if (e.parameters.action == add_action_name)  {data = {"type": "success", "message": "Google: Zaregistrováno" }; }
+        if (e.parameters.action == fill_action_name)        {data = {"type": "success", "message": "Google: Zaznamenáno" }; }
+        else if (e.parameters.action ==  tank_action_name ) {data = {"type": "success", "message": "Google: Natankováno" }; }
+        else if (e.parameters.action == create_action_name) {data = {"type": "success", "message": "Google: Zaregistrováno" }; }
+        notifyUser(e, "Success");
     } else {
         if (!data) {data = {"type": "fail", "message": "Google: Něco se nepovedlo" }; }
         notifyUser(e, "Error");
@@ -94,7 +92,7 @@ function submitData(val, hard) {
 
     if (val.action == fill_action_name) {r = fillIn(val, hard); }
     else if (val.action == tank_action_name) {r = tankCar(val, hard); }
-    else if (val.action == add_action_name) {r = registerCar(val, hard); }
+    else if (val.action == create_action_name) {r = registerCar(val, hard); }
     else {notifyUser("submitData switch reached end. Bad action!", "Warning"); }
 
     return r;
@@ -162,7 +160,7 @@ function tankCar(val, hard) {
 
 function registerCar(val, hard) {
 
-    if (val.action != add_action_name) {
+    if (val.action != create_action_name) {
         notifyUser('Badly set parameter. (add)', "Error");
         return false;
     }

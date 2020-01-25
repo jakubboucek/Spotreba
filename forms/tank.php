@@ -20,35 +20,35 @@
 
 		<div class="input-group">
 			<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Název auta</span></div>
-			<input type="text" name="carname" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('carname')); ?>" list="known_carnames">
+			<input type="text" name="carname" class="form-control" value="<?php echo Helpers::getFormValue('carname'); ?>" list="known_carnames">
 		</div>
 
 		<div class="input-group">
 			<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Šofér</span></div>
-			<input type="text" name="driver" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('driver')); ?>" list="known_drivers">
+			<input type="text" name="driver" class="form-control" value="<?php echo Helpers::getFormValue('driver'); ?>" list="known_drivers">
 		</div>
 
 		<div class="input-group">
 			<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Cena</span></div>
-			<input type="number" name="price" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('price')); ?>">
+			<input type="number" name="price" class="form-control" value="<?php echo Helpers::getFormValue('price'); ?>">
 			<div class="input-group-append"><span class="input-group-text">Kč</span></div>
 		</div>
 
 		<div class="input-group">
 			<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Tankováno</span></div>
-			<input type="number" name="liters" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('liters')); ?>">
+			<input type="number" name="liters" class="form-control" value="<?php echo Helpers::getFormValue('liters'); ?>">
 			<div class="input-group-append"><span class="input-group-text">Litrů</span></div>
 		</div>
 
 		<div class="input-group">
 			<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Stav</span></div>
-			<input type="number" name="km_stav" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('km_stav')); ?>">
+			<input type="number" name="km_stav" class="form-control" value="<?php echo Helpers::getFormValue('km_stav'); ?>">
 			<div class="input-group-append"><span class="input-group-text">Kilometrů</span></div>
 		</div>
 
 		<div class="input-group">
 			<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Poznámka</span></div>
-			<textarea type="text" name="note" class="form-control" rows="1"><?php echo Escape::html(Helpers::getFormValue('note')); ?></textarea>
+			<textarea type="text" name="note" class="form-control" rows="1"><?php echo Helpers::getFormValue('note'); ?></textarea>
 		</div>
 
 		<input type="hidden" name="action" value="form-tank">
