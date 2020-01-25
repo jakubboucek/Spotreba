@@ -32,10 +32,9 @@ $google = null;
 $page = '404';
 
 switch ($requestPath) {
-    case "/add" :    $page = 'add'; break;
-    case "/tank" :   $page = 'tank'; break;
-    case "/create" : $page = 'create'; break;
-    case "/show" :   $page = 'show'; break;
+    case "/add.php" :    $page = 'add'; break;
+    case "/tank.php" :   $page = 'tank'; break;
+    case "/create.php" : $page = 'create'; break;
     case "/" :       $page = 'welcome'; break;
     case preg_match('/change\/.*/i', $requestPath) || preg_match('/change$/i', $requestPath) : $page = 'change'; break;
 }
