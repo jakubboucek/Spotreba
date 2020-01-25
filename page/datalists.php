@@ -1,7 +1,18 @@
+<?php
 
-<datalist id="uzivatele_aut">
+$data = "";
+
+?>
+
+
+<datalist id="known_carnames">
+	<option>carnames</option>
 </datalist>
-<datalist id="znama_mesta">
+
+<datalist id="known_drivers">
+	<option>drivers</option>
 </datalist>
-<datalist id="znama_auta">
+
+<datalist id="known_cities">
+	<option>cities</option>
 </datalist>

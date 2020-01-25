@@ -82,4 +82,20 @@ class Uploader
         }
     }
 
+    public function showData()
+    {
+
+        $googleURL = $this->url
+            .'?action='.urlencode('Zaznamenat')
+        ;
+
+        $response = file_get_contents($googleURL);
+        $response = json_decode($response);
+        return $response;
+
+        if (!$isFileSaved) {
+            throw new UploaderException('Unable to contact google!');
+        }
+    }
+
 }

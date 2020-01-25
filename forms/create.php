@@ -32,7 +32,7 @@
 
 	<div class="input-group">
 		<div class="input-group-prepend"><span class="input-group-text" style="width: 100px;">Šofér</span></div>
-		<input type="text" name="driver" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('driver')); ?>">
+		<input type="text" name="driver" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('driver')); ?>" list="known_drivers">
 	</div>
 
 	<div class="input-group">

@@ -23,27 +23,27 @@
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Název auta</span></div>
-		<input type="text" name="carname" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('carname')); ?>">
+		<input type="text" name="carname" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('carname')); ?>" list="known_carnames">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Odkud</span></div>
-		<input type="text" name="odkud" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('odkud')); ?>">
+		<input type="text" name="odkud" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('odkud')); ?>" list="known_cities">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Přes</span></div>
-		<input type="text" name="pres" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('pres')); ?>">
+		<input type="text" name="pres" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('pres')); ?>" list="known_cities">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Kam</span></div>
-		<input type="text" name="kam" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('kam')); ?>">
+		<input type="text" name="kam" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('kam')); ?>" list="known_cities">
 	</div>
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Šofér</span></div>
-		<input type="text" name="driver" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('driver')); ?>">
+		<input type="text" name="driver" class="form-control" value="<?php echo Escape::html(Helpers::getFormValue('driver')); ?>" list="known_drivers">
 	</div>
 
 	<div class="input-group">
