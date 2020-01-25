@@ -17,7 +17,6 @@
 				."<td>".$car['owner']."</td>"
 				."<td>".$car['driver']."</td>"
 				."<td>".$car['km_stav']."</td>"
-				.'<td><a href="'.'/change/'.$car['carId'].'">'.$car['carId']."</td>"
 				."</tr>"
 				.$rows;
 		}

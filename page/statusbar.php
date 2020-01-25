@@ -10,6 +10,8 @@
 	<div class="alert alert-danger" role="alert" id="statusbar" style="text-align: center;"><?=$google->message?></div>
 <?php elseif(isset($error) && $error): ?>
 	<div class="alert alert-danger" role="alert" id="statusbar" style="text-align: center;"><?php echo(Escape::html($error)); ?></div>
+<?php elseif($page == "404"): ?>
+	<div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;"><strong>Vyber z menu &#8593;</strong></div>
 <?php else: ?>
 	<div class="alert alert-info" role="alert" id="statusbar" style="text-align: center;">Zapiš</div>
 <?php endif; ?>

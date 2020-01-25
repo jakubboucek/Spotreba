@@ -60,13 +60,16 @@
 
 	<div class="input-group">
 		<div class="input-group-prepend" style="width: 30%;"><span class="input-group-text" style="width: 100%;">Poznámka</span></div>
-		<textarea type="text" name="note" class="form-control" rows="1"><?php echo Escape::html(Helpers::getFormValue('form')); ?></textarea>
+		<textarea type="text" name="note" class="form-control" rows="1"><?php echo Escape::html(Helpers::getFormValue('note')); ?></textarea>
 	</div>
 
 	<div class="input-group">
-		<div class="btn-group btn-group-toggle" data-toggle="buttons" style="width: 100%;" value="<?php echo(Helpers::getFormValue('type')); ?>"><span class="input-group-text" style="width: 30%">Typ</span>
-			<label class="btn btn-info"><input type="radio" name="type" id="type_sluzebni" autocomplete="off">Služební</label>
-			<label class="btn btn-info"><input type="radio" name="type" id="type_osobni" autocomplete="off">Osobní</label>
+		<div class="btn-group" data-toggle="buttons" style="width: 100%;">
+			<span class="input-group-prepend" style="width: 30%"><span class="input-group-text" style="width: 100%;">Typ</span></span>
+			<select name="type" class="custom-select" value="<?php echo(Helpers::getFormValue('type')); ?>">
+				<option value="Služební" <?php if(Helpers::getFormValue('type')=="Služební"){echo("selected");} ?>>Služební</option>
+				<option value="Osobní" <?php if(Helpers::getFormValue('type')=="Osobní"){echo("selected");} ?>>Osobní</option>
+			</select>
 		</div>
 	</div>
 

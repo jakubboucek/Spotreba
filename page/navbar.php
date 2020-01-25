@@ -22,12 +22,6 @@
             Registrace
         </a>
 
-        <a  class="btn <?php if ($page == "show") {echo("btn-success");}else{echo("btn-secondary");}?>"
-            href="<?= $basePath; ?>/show.php"
-            id="button_create">
-            Seznam aut
-        </a>
-
     </div>
 </div>
 

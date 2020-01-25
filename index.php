@@ -19,7 +19,7 @@ use App\Uploader\UploaderException;
 
 // ===== Inicializace ===========================
 
-    $googleScriptUrl = 'APP_SCRIPT_URL';
+    $googleScriptUrl = 'https://script.google.com/macros/s/AKfycbwgGapAKlSUUiXYsYjyk0jlIGiZtYMnB9yq1mvxrbG3PXvEyWHD/exec';
     $basePath = rtrim(\dirname($_SERVER['SCRIPT_NAME']),'/');
     $requestPath = substr($_SERVER['REQUEST_URI'], \strlen($basePath));
     $storage = new Storage(__DIR__ . '/output');
@@ -35,8 +35,6 @@ switch ($requestPath) {
     case "/add.php" :    $page = 'add'; break;
     case "/tank.php" :   $page = 'tank'; break;
     case "/create.php" : $page = 'create'; break;
-    case "/" :       $page = 'welcome'; break;
-    case preg_match('/change\/.*/i', $requestPath) || preg_match('/change$/i', $requestPath) : $page = 'change'; break;
 }
 
 
@@ -115,7 +113,6 @@ if(Helpers::isFormSent('form-create')){ // odesláno
         case 'create': include("forms/create.php"); break;
         case 'show': include("page/show.php"); break;
         case 'welcome': include("page/welcome.php"); break;
-        case 'change': include("forms/change.php"); break;
         default: include("page/404.php"); break;
     }
 

@@ -19,29 +19,29 @@ function doGet(e) {
 
         if(e.parameters.action == fill_action_name){
             if(!e.parameter.fill_name){data = {"type": "fail", "message": "Google: Chybí název auta"};}
-            // if(!e.parameter.fill_odkud){data = {"type": "fail", "message": "Google: message"};}
-            // if(!e.parameter.fill_pres){data = {"type": "fail", "message": "Google: message"};}
-            // if(!e.parameter.fill_kam){data = {"type": "fail", "message": "Google: message"};}
-            // if(!e.parameter.fill_driver){data = {"type": "fail", "message": "Google: message"};}
-            if(!e.parameter.fill_konecny&&!e.parameter.fill_kilometru){data = {"type": "fail", "message": "Google: Chybí kilometry"};}
-            if(e.parameter.fill_konecny&&e.parameter.fill_kilometru){data = {"type": "fail", "message": "Google: Je vyplněný stav i ujeto zároveň"};}
-            // if(!e.parameter.fill_note){data = {"type": "fail", "message": "Google: message"};}
-            if(!e.parameter.fill_type){data = {"type": "fail", "message": "Google: Chybí typ cesty"};}
+            // else if(!e.parameter.fill_odkud){data = {"type": "fail", "message": "Google: message"};}
+            // else if(!e.parameter.fill_pres){data = {"type": "fail", "message": "Google: message"};}
+            // else if(!e.parameter.fill_kam){data = {"type": "fail", "message": "Google: message"};}
+            // else if(!e.parameter.fill_driver){data = {"type": "fail", "message": "Google: message"};}
+            else if(!e.parameter.fill_konecny&&!e.parameter.fill_kilometru){data = {"type": "fail", "message": "Google: Chybí kilometry"};}
+            else if(e.parameter.fill_konecny&&e.parameter.fill_kilometru){data = {"type": "fail", "message": "Google: Je vyplněný stav i ujeto zároveň"};}
+            // else if(!e.parameter.fill_note){data = {"type": "fail", "message": "Google: message"};}
+            else if(!e.parameter.fill_type){data = {"type": "fail", "message": "Google: Chybí typ cesty"};}
         }
         else if(e.parameters.action == tank_action_name){
             if(!e.parameter.action){data = {"type": "fail", "message": "Google: Chybí akce"};}
-            if(!e.parameter.tank_name){data = {"type": "fail", "message": "Google: Chybí jméno auta"};}
-            // if(!e.parameter.tank_driver){data = {"type": "fail", "message": "Google: Chybí šofér"};}
-            // if(!e.parameter.tank_price){data = {"type": "fail", "message": "Google: Chybí cena"};}
-            if(!e.parameter.tank_l){data = {"type": "fail", "message": "Google: Chybí litry"};}
-            if(!e.parameter.tank_km){data = {"type": "fail", "message": "Google: Chybí kilometry"};}
-            // if(!e.parameter.tank_note){data = {"type": "fail", "message": "Google: Chybí poznámka"};}
+            else if(!e.parameter.tank_name){data = {"type": "fail", "message": "Google: Chybí jméno auta"};}
+            // else if(!e.parameter.tank_driver){data = {"type": "fail", "message": "Google: Chybí šofér"};}
+            // else if(!e.parameter.tank_price){data = {"type": "fail", "message": "Google: Chybí cena"};}
+            else if(!e.parameter.tank_l){data = {"type": "fail", "message": "Google: Chybí litry"};}
+            else if(!e.parameter.tank_km){data = {"type": "fail", "message": "Google: Chybí kilometry"};}
+            // else if(!e.parameter.tank_note){data = {"type": "fail", "message": "Google: Chybí poznámka"};}
         }
         else if(e.parameters.action == add_action_name){
             if(!e.parameter.add_name){data = {"type": "fail", "message": "Google: Chybí jméno auta"};}
-            if(!e.parameter.add_km){data = {"type": "fail", "message": "Google: Chybí stav km"};}
-            // if(!e.parameter.add_owner){data = {"type": "fail", "message": "Google: Chybí majitel auta"};}
-            // if(!e.parameter.add_user){data = {"type": "fail", "message": "Google: Chybí šofér"};}
+            else if(!e.parameter.add_km){data = {"type": "fail", "message": "Google: Chybí stav km"};}
+            // else if(!e.parameter.add_owner){data = {"type": "fail", "message": "Google: Chybí majitel auta"};}
+            // else if(!e.parameter.add_user){data = {"type": "fail", "message": "Google: Chybí šofér"};}
         }
 
         if (!data && submitData(e.parameters)) {
