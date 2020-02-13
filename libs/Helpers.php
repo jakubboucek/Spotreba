@@ -4,6 +4,7 @@ namespace App;
 
 class Helpers
 {
+
     public static function getFormValue($inputName, $default = '')
     {
         if (isset($_POST[$inputName])) {

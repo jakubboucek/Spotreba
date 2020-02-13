@@ -70,18 +70,13 @@ if(Helpers::isFormSent('form-tank')){ // odesláno
 }
 if(Helpers::isFormSent('form-create')){ // odesláno
 
-
-    $e = null;
-    $googleResponse = null;
     try {
-
         $car = new Car(
             new Content\Carname(Helpers::getFormValue('carname')),
             new Content\Name(Helpers::getFormValue('owner')),
             new Content\Name(Helpers::getFormValue('driver')),
             new Content\Km(Helpers::getFormValue('km_stav')),
         );
-
         $google = $uploader->createCar($car->toArray());
 
     } catch (ValidateException $e) {

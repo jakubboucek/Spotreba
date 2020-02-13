@@ -1,19 +1,17 @@
 <?php
 	namespace App;
 ?>
-
 <?php if($car instanceof Car && isset($google) && $google->type=="success"): ?>
 
-<div style="width: 400px; margin: auto;">
-	<table class="table table-bordered">
-		<?php $data = $car->toArray(); ?>
-		<tr><td>Název auta</td><td><?php echo Escape::html(Helpers::getFormValue('carname')); ?></td>
-		<tr><td>Majitel</td><td><?php echo Escape::html(Helpers::getFormValue('owner')); ?></td>
-		<tr><td>Šofér</td><td><?php echo Escape::html(Helpers::getFormValue('driver')); ?></td>
-		<tr><td>Stav [km]</td><td><?php echo Escape::html(Helpers::getFormValue('km_stav')); ?></td>
-		<tr><td>ID auta</td><td><?php echo Escape::html(Helpers::getFormValue('carId')); ?></td>
-	</table>
-</div>
+	<div style="width: 400px; margin: auto;">
+		<table class="table table-bordered">
+			<tr><td>Název auta</td><td><?php echo Escape::html(Helpers::getFormValue('carname')); ?></td>
+			<tr><td>Majitel</td><td><?php echo Escape::html(Helpers::getFormValue('owner')); ?></td>
+			<tr><td>Šofér</td><td><?php echo Escape::html(Helpers::getFormValue('driver')); ?></td>
+			<tr><td>Stav [km]</td><td><?php echo Escape::html(Helpers::getFormValue('km_stav')); ?></td>
+			<tr><td>ID auta</td><td><?php echo Escape::html(Helpers::getFormValue('carId')); ?></td>
+		</table>
+	</div>
 
 
 <?php else: ?>

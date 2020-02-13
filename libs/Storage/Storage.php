@@ -8,7 +8,6 @@ use Nette\Utils\Strings;
 
 class Storage
 {
-
     private $path;
 
     public function __construct($path)

@@ -7,7 +7,6 @@ abstract class DataObject
     protected $checkValidity = true;
     protected $content;
 
-
     public function __construct($content)
     {
         if ($this->checkValidity) {
@@ -16,17 +15,14 @@ abstract class DataObject
         $this->content = $content;
     }
 
-
     protected function validate($content)
     {
     }
-
 
     public function getContent()
     {
         return $this->content;
     }
-
 
     public function __toString()
     {
