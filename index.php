@@ -91,24 +91,24 @@ if(Helpers::isFormSent('form-create')){ // odesláno
 
 ?>
 
-<? include("page/head.php"); ?>
+<? require __DIR__ . '/page/head.php'; ?>
 
 <body>
 
-<?php include("page/datalists.php"); ?>
+<?php require __DIR__ . '/page/datalists.php'; ?>
 
-<?php include("page/navbar.php"); ?>
-<?php include("page/statusbar.php"); ?>
+<?php require __DIR__ . '/page/navbar.php'; ?>
+<?php require __DIR__ . '/page/statusbar.php'; ?>
 
 <?php
 
     switch($page) {
-        case 'add': include("forms/add.php"); break;
-        case 'tank': include("forms/tank.php"); break;
-        case 'create': include("forms/create.php"); break;
-        case 'show': include("page/show.php"); break;
-        case 'welcome': include("page/welcome.php"); break;
-        default: include("page/404.php"); break;
+        case 'add': require __DIR__ . '/forms/add.php'; break;
+        case 'tank': require __DIR__ . '/forms/tank.php'; break;
+        case 'create': require __DIR__ . '/forms/create.php'; break;
+        case 'show': require __DIR__ . '/page/show.php'; break;
+        case 'welcome': require __DIR__ . '/page/welcome.php'; break;
+        default: require __DIR__ . '/page/404.php'; break;
     }
 
 ?>
