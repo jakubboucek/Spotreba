@@ -1,7 +1,6 @@
 .clasp.json
 appsscript.json
 temp
-composer.lock
 log
 output
 /vendor/
