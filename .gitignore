@@ -4,3 +4,4 @@ temp
 composer.lock
 log
 output
+/vendor/
